@@ -2,11 +2,11 @@
 #Code for reading in the maze files and parsing them into a useful 2d array (really a list of lists)
 
 
-#To Do Still: Figure out how to get the starting and ending points into my class
+#To Do Still: Figure out how to store  the multiple end points of the search mazes.
 #             Possibly figure out a more efficient way of doing this
 
 
-#class that holds all the relevant matrix info (height, width, starting and ending points
+#class that holds all the relevant matrix info (height, width, starting and ending points)
 class mInfo:
     def __init__(self, height, width, spx, spy, epx, epy):
         self.h = height
@@ -31,7 +31,7 @@ def loadMaze(filename, maze):
  
     #print(height)                                  #checking if I got the height right
     width = int(chars/height)                       #calculating the width
-    print(width)
+    #print(width)
     mazeinfo = mInfo(height, width, 0, 0, 0, 0)     #initializing the mInfo class with it's relevant info
     
     for column in mazefile:                     #sets up 2d matrix
@@ -51,13 +51,21 @@ mazeinfo = loadMaze(filename, maze)                                             
 
 for i in range(0, mazeinfo.h):                                  #prints out the read in textfile
     for j in range(0, mazeinfo.w):                              #basically proves that I read in the file correctly
-        print(maze[i][j], end="")                               # and made 2d accesible S
+        if maze[i][j] == 'P':                                   #gets the x,y coordinates of the starting point
+            mazeinfo.startpx = i
+            mazeinfo.startpy = j
+        if maze[i][j] == '.':                                   #gets the x,y coordinates of the ending point
+            mazeinfo.endpx = i                                  #NOTE: Does not work with the multiple endpoint mazes, still need to work on that.
+            mazeinfo.endpy = j
+        print(maze[i][j], end="")                               # and made a 2d accesible maze
     print()                                                     #prints a newline at the end of the row
 
 #print("Testing...")  #following code tests class object is working
 #print(mazeinfo.h)
 #print(mazeinfo.w)
 #print(mazeinfo.endpx)
+#print(mazeinfo.startpx, mazeinfo.startpy)
+#print(mazeinfo.endpx, mazeinfo.endpy)
 
  
 
