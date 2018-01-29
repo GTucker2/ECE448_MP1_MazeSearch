@@ -26,4 +26,4 @@ print()
 maze_tree = MazeTree.MazeTree()
 maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo.startpx, mazeinfo.startpy)                                                    #prints a newline at the end of the row
 
-#print(tree_root.data)
+print(maze_tree.data)
