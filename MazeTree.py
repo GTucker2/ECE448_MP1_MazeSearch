@@ -30,18 +30,25 @@ class MazeTree:
             return None
         if start_x < 0:
             return None
-        if start_x > len(maze):
+        if start_x > (len(maze)-1):
             return None
         if start_y < 0:
             return None
-        if start_y > len(maze[0]):
+        if start_y > (len(maze[0])-1):
             return None
 
-        ret_tree = create_node(maze[start_x][start_y], start_x, start_y)
+        print(start_x)
+        print(start_y)
+        
+        ret_tree = MazeTree.create_node(maze[start_x][start_y], start_x, start_y)
         #recurse to create the children
-        ret_tree.up = create_tree(maze, start_x, start_y+1)
-        ret_tree.down = create_tree(maze, start_x, start_y-1)
-        ret_tree.left = create_tree(maze, start_x-1, start_y)
-        ret_tree.right = create_tree(maze, start_x+1, start_y)
+        up = start_y + 1
+        down = start_y - 1
+        left = start_x - 1
+        right = start_x + 1
+        ret_tree.up = MazeTree.create_tree(self, maze, start_x, up)
+        ret_tree.down = MazeTree.create_tree(self, maze, start_x, down)
+        ret_tree.left = MazeTree.create_tree(self, maze, left, start_y)
+        ret_tree.right = MazeTree.create_tree(self, maze, right, start_y)
         #return the root of the tree
         return ret_tree
