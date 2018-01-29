@@ -44,7 +44,7 @@ def loadMaze(filename, maze):
         
 
 
-
+'''
 filename = input("Please enter the name of the mazefile (.txt): ")              #gets the file name from the user
 maze = []                                                                       #creates the 1d matrix   
 mazeinfo = loadMaze(filename, maze)                                             #first function loads the maze and finds the height and width
@@ -66,6 +66,7 @@ for i in range(0, mazeinfo.h):                                  #prints out the 
 #print(mazeinfo.endpx)
 #print(mazeinfo.startpx, mazeinfo.startpy)
 #print(mazeinfo.endpx, mazeinfo.endpy)
+''' 
 
  
 
