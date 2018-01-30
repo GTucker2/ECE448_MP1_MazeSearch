@@ -28,13 +28,15 @@ class MazeTree:
         #base cases. check if x,y are in the bounds of the maze and if the maze exists
         if maze is None:
             return None
+        x_max = len(maze)
+        y_max = len(maze[0])
         if start_x < 0:
             return None
-        if start_x > (len(maze)-1):
+        elif start_x >= x_max:
             return None
         if start_y < 0:
             return None
-        if start_y > (len(maze[0])-1):
+        elif start_y >= y_max:
             return None
 
         print(start_x)
