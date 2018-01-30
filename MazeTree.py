@@ -1,21 +1,27 @@
 ## author : Michael Racine 
 ## date: 1/28/18
-
+## Class that represents a tree filled with nodes created from a maze
 
 class MazeTree:
 
-    #initilize the nodes
+    # initilize the nodes
+    # param: self
+    # return: initialized "MazeTree" hence refered to as a node
     def __init__(self):
-        self.data = None
-        self.x = None
-        self.y = None
+        self.data = 'empty'
+        self.x = -1
+        self.y = -1
         self.up = None
         self.down = None
         self.left = None
         self.right = None
         self.visited = False
 
-    #create a node given data and coordinates
+    # create a node given data and coordinates
+    # param: data - the string the node should store
+    #        x    - the x coordinate of the node
+    #        y    - the y coordinate of the node
+    # return: the created node
     def create_node(data, x, y):
        node = MazeTree()
        node.data = data
@@ -23,34 +29,29 @@ class MazeTree:
        node.y = y
        return node
 
-    #create the tree based on data
+    # create the tree based on data
+    # param: maze      - 2d array of strings
+    #        start_x   - the x position of the starting point
+    #        start_y   - the y postiion of the starting point
+    # return: the root of the tree/graph
     def create_tree(self, maze, start_x, start_y):
-        #base cases. check if x,y are in the bounds of the maze and if the maze exists
-        if maze is None:
-            return None
-        x_max = len(maze)
-        y_max = len(maze[0])
-        if start_x < 0:
-            return None
-        elif start_x >= x_max:
-            return None
-        if start_y < 0:
-            return None
-        elif start_y >= y_max:
-            return None
+        # initilize 2d array and fill with tree nodes; the data doesn't matter so just do the index 0,0 for all
+        node_array = [[MazeTree.create_node(maze[0][0], 0, 0) for x in range(len(maze))] for y in range(len(maze))] 
 
-        print(start_x)
-        print(start_y)
-        
-        ret_tree = MazeTree.create_node(maze[start_x][start_y], start_x, start_y)
-        #recurse to create the children
-        up = start_y + 1
-        down = start_y - 1
-        left = start_x - 1
-        right = start_x + 1
-        ret_tree.up = MazeTree.create_tree(self, maze, start_x, up)
-        ret_tree.down = MazeTree.create_tree(self, maze, start_x, down)
-        ret_tree.left = MazeTree.create_tree(self, maze, left, start_y)
-        ret_tree.right = MazeTree.create_tree(self, maze, right, start_y)
-        #return the root of the tree
-        return ret_tree
+        # put the correct node in the corresponding index
+        for x in range(0, len(maze)):
+            for y in range(0, len(maze)):
+                node_array[x][y] = MazeTree.create_node(maze[x][y], x, y)
+
+        # create the full tree/graph from the array
+        for x in range(1, len(maze)-1):
+            for y in range(1, len(maze)-1):
+                # nodes should point to the walls but the walls shouldn't point to anything
+                if node_array[x][y].data != '%':
+                    node_array[x][y].up = node_array[x][y+1]
+                    node_array[x][y].down = node_array[x][y-1]
+                    node_array[x][y].left = node_array[x-1][y]
+                    node_array[x][y].right = node_array[x+1][y]
+
+        # return the root of the tree. this show be the player's position
+        return node_array[start_x][start_y]

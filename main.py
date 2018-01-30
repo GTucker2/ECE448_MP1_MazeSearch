@@ -18,12 +18,7 @@ for i in range(0, mazeinfo.h):                                  #prints out the 
         #print(ascii_maze[i][j], end="")                               # and made a 2d accesible maze
     #print() 
 
-print(mazeinfo.h)
-print(mazeinfo.w)
-print()
-
 # Create a graph based on the maze data
-maze_tree = MazeTree.MazeTree()
-maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo.startpx, mazeinfo.startpy)                                                    #prints a newline at the end of the row
-
+maze_tree = MazeTree.MazeTree()                                                 #prints a newline at the end of the row
+maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo.startpx, mazeinfo.startpy )
 print(maze_tree.data)
