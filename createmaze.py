@@ -2,10 +2,6 @@
 #Code for reading in the maze files and parsing them into a useful 2d array (really a list of lists)
 
 
-#To Do Still: Figure out how to store  the multiple end points of the search mazes.
-#             Possibly figure out a more efficient way of doing this
-
-
 #class that holds all the relevant matrix info (height, width, starting and ending points)
 class mInfo:
     def __init__(self, height, width, spx, spy, epx, epy):
@@ -25,48 +21,25 @@ def loadMaze(filename, maze):
     height = len(mazefile)
     chars = 0
 
-    for line in mazefile:                   #gets the number of characters in the maze to calculate width (Possibly a more efficient way of doing this)
+    for line in mazefile:                   #gets the number of characters in the maze to calculate width
         #print(line),                       #prints maze to console without having to save it anywhere
-        chars = chars + len(line)
+        chars = chars + len(line
  
-    #print(height)                                  #checking if I got the height right
+    #print(height)
     width = int(chars/height)                       #calculating the width
     #print(width)
     mazeinfo = mInfo(height, width, 0, 0, 0, 0)     #initializing the mInfo class with it's relevant info
     
     for column in mazefile:                     #sets up 2d matrix
-        column = column.strip()                 #NOTE!!: these 4 lines may need to be rewritten/removed because I found in on stackoverflow and I am not 
-        row = [i for i in column]               # sure what the rules are if you cite your code but if we can't do that then I'll have to figure out a 
-        maze.append(row)                        # different way    
-                                                #Link: https://stackoverflow.com/questions/40943108/reading-a-maze-file-in-python-and-printing-out-the-maze-line-by-line
+        column = column.strip()                 #These 4 lines of code are from the following link
+        row = [i for i in column]               #Link: https://stackoverflow.com/questions/40943108/reading-a-maze-file-in-python-and-printing-out-the-maze-line-by-line
+        maze.append(row)                        #
     
     return mazeinfo                         #returns the class so that it is useful outside of this function
         
 
 
-'''
-filename = input("Please enter the name of the mazefile (.txt): ")              #gets the file name from the user
-maze = []                                                                       #creates the 1d matrix   
-mazeinfo = loadMaze(filename, maze)                                             #first function loads the maze and finds the height and width
 
-for i in range(0, mazeinfo.h):                                  #prints out the read in textfile
-    for j in range(0, mazeinfo.w):                              #basically proves that I read in the file correctly
-        if maze[i][j] == 'P':                                   #gets the x,y coordinates of the starting point
-            mazeinfo.startpx = i
-            mazeinfo.startpy = j
-        if maze[i][j] == '.':                                   #gets the x,y coordinates of the ending point
-            mazeinfo.endpx = i                                  #NOTE: Does not work with the multiple endpoint mazes, still need to work on that.
-            mazeinfo.endpy = j
-        print(maze[i][j], end="")                               # and made a 2d accesible maze
-    print()                                                     #prints a newline at the end of the row
-
-#print("Testing...")  #following code tests class object is working
-#print(mazeinfo.h)
-#print(mazeinfo.w)
-#print(mazeinfo.endpx)
-#print(mazeinfo.startpx, mazeinfo.startpy)
-#print(mazeinfo.endpx, mazeinfo.endpy)
-''' 
 
  
 
