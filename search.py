@@ -15,13 +15,14 @@ def bredth_first(tree, start, goal):
     ''' bredth_first
         Griffin A. Tucker
         January 25 2018
-        This function performs a bredth-first search on
-            a given graph.
-        This function accepts a tree to perform the search
-            on, a start node to begin the search at, and
-            a goal node to search for. 
-        This function returns 1 if the goal is found and
-            0 if the goal is not found.
+        Performs a bredth-first search on a given tree.
+        Accepts:
+            tree  : a tree to perform the search on
+            start : a start node to begin from
+            goal  : a goal node to search for
+        Returns:
+            1 : if the goal is found
+            0 : if the goal is not found
     '''
     # Check if the tree is valid. If it is not, return 0.
     if tree is None: return 0 
