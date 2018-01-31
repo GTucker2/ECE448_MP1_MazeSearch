@@ -47,11 +47,11 @@ class MazeTree:
         for x in range(1, len(maze)-1):
             for y in range(1, len(maze)-1):
                 # nodes should point to the walls but the walls shouldn't point to anything
-                if node_array[x][y].data != '%':
-                    node_array[x][y].up = node_array[x][y+1]
-                    node_array[x][y].down = node_array[x][y-1]
-                    node_array[x][y].left = node_array[x-1][y]
-                    node_array[x][y].right = node_array[x+1][y]
+                #if node_array[x][y].data != '%': #this makes the % nodes have no children. If we want to change it back just remove the comment
+                node_array[x][y].up = node_array[x-1][y]
+                node_array[x][y].down = node_array[x+1][y]
+                node_array[x][y].left = node_array[x][y-1]
+                node_array[x][y].right = node_array[x][y+1]
 
         # return the root of the tree. this show be the player's position
         return node_array[start_x][start_y]

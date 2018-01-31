@@ -14,8 +14,11 @@ maze_tree = MazeTree.MazeTree()
 maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo.startpx, mazeinfo.startpy)
 
 maze_tree.visited = True
-print(maze_tree.right.data)#.right.down.left.visited)
-
+print(maze_tree.data)#.right.down.left.visited)
+print(maze_tree.up.data)
+print(maze_tree.down.data)
+print(maze_tree.left.data)
+print(maze_tree.right.data)
 # Perform BFS and export solution
 #search.bredth_first(maze_tree, '.')
 #outputname = input(" Please enter the desired outputfile name (.txt) ")
