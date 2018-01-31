@@ -43,12 +43,13 @@ def loadMaze(filename, maze):
     
     return mazeinfo                                 #returns the class so that it is useful outside of this function
 
-def print_maze(maze):
+def print_maze(maze, file_name):
     ''' printMaze
         Griffin A. Tucker
         Runs through a given array of mazedata and prints it to console
         Accepts: 
             maze : a 2D array of character maze data
+            file_name : the name of the file to be exported
         Returns:
             1 : if no errors
             0 : if errors, i.e. the maze array is not valid
@@ -58,18 +59,22 @@ def print_maze(maze):
     if maze is None:
         return 0
     else:
+        # Declare a file to write to 
+        fo = open(file_name, "w")
+        # Write line by line 
         for i in range(0, len(maze)):
             if maze[0] is None:
                 return 0
-            else
+            else:
                 for j in range(0, len(maze[0])):
                     if maze[i][j] is None:
                         return 0
-                    else
-                        print(maze[i][j], end="")
-        print()
+                    else:
+                        fo.write(maze[i][j])
+            fo.write('\n')
 
     # Return successful 
+    fo.close()
     return 1
         
 

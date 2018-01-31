@@ -8,6 +8,11 @@ filename = input("Please enter the name of the mazefile (.txt): ")
 ascii_maze = []                                                                      
 mazeinfo = createmaze.loadMaze(filename, ascii_maze)      
 
+outputname = input(" Please enter the desired outputfile name (.txt) ")
+createmaze.print_maze(ascii_maze, outputname)
+
 # Create a graph based on the maze data
 maze_tree = MazeTree.MazeTree()                                                
-maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo.startpx, mazeinfo.startpy )
+maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo.startpx, mazeinfo.startpy)
+
+# Perform DFS 
