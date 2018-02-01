@@ -26,6 +26,9 @@ def bredth_first(maze_data, root, goal):
     '''
     # Check if the tree is valid. If it is not, return 0.
     if root is None: return 0
+    else: 
+        root.visited_from = "root"
+        #root.traversed = True 
 
     # Declare a queue and enqueue the starting node.
     q = queue.Queue()         
@@ -36,20 +39,38 @@ def bredth_first(maze_data, root, goal):
     # expand the node to the queue. 
     while q.size() > 0:       
         cur = q.dequeue() 
-        maze_data[cur.x][cur.y] = '^'
-        if cur.visited is False:
+        if cur.traversed is False:
+            if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
-                print("success")
+                while cur.data is not 'P':
+                    print(cur.visited_from)    
+                    if cur.visited_from == "down":
+                        cur = cur.down
+                    elif cur.visited_from == "up":
+                        cur = cur.up
+                    elif cur.visited_from == "right":
+                        cur = cur.right
+                    elif cur.visited_from == "left":
+                        cur = cur.left 
+                    else : return 0
+                    maze_data[cur.x][cur.y] = '^'
                 return 1
             else:                 
-                if cur.up is not None and cur.up.data is not '%': q.enqueue(cur.up)
-                if cur.down is not None and cur.down.data is not '%': q.enqueue(cur.down)
-                if cur.left is not None and cur.left.data is not '%': q.enqueue(cur.left)
-                if cur.right is not None and cur.right.data is not '%': q.enqueue(cur.right)
-            cur.visited = True
-    
+                if cur.up is not None and cur.up.data is not '%': 
+                    q.enqueue(cur.up)
+                    cur.up.visited_from = "down"
+                if cur.down is not None and cur.down.data is not '%': 
+                    q.enqueue(cur.down)
+                    cur.down.visited_from = "up"
+                if cur.left is not None and cur.left.data is not '%': 
+                    q.enqueue(cur.left)
+                    cur.left.visited_from = "right"
+                if cur.right is not None and cur.right.data is not '%': 
+                    q.enqueue(cur.right)
+                    cur.right.visited_from = "left"
+            cur.traversed = True
+
     # Return 0 if goal was not found
-    print("fail")
     return 0
 
 def depth_first():

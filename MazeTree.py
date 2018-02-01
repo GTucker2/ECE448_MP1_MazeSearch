@@ -1,7 +1,7 @@
 ## author : Michael Racine 
 ## date: 1/28/18
-## Class that represents a tree filled with nodes created from a maze
 
+## Class that represents a tree filled with nodes created from a maze
 class MazeTree:
 
     # initilize the nodes
@@ -15,7 +15,8 @@ class MazeTree:
         self.down = None
         self.left = None
         self.right = None
-        self.visited = False
+        self.visited_from = "not"
+        self.traversed = False 
 
     # create a node given data and coordinates
     # param: data - the string the node should store
