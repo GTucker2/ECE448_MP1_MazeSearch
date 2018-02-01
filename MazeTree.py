@@ -36,16 +36,16 @@ class MazeTree:
     # return: the root of the tree/graph
     def create_tree(self, maze, mazeInfo, start_x, start_y):
         # initilize 2d array and fill with tree nodes; the data doesn't matter so just do the index 0,0 for all
-        node_array = [[MazeTree.create_node(maze[0][0], 0, 0) for x in range(len(maze))] for y in range(len(maze))] 
-
+        node_array = [[MazeTree.create_node(maze[0][0], 0, 0) for y in range(mazeInfo.w)] for x in range(mazeInfo.h)] 
+ 
         # put the correct node in the corresponding index
-        for x in range(0, len(maze)):
-            for y in range(0, len(maze)):
+        for x in range(0, mazeInfo.h):
+            for y in range(0, mazeInfo.w):
                 node_array[x][y] = MazeTree.create_node(maze[x][y], x, y)
 
         # create the full tree/graph from the array
-        for x in range(1, mazeInfo.h):
-            for y in range(1, mazeInfo.w):
+        for x in range(1, mazeInfo.h-1):
+            for y in range(1, mazeInfo.w-1):
                 # nodes should point to the walls but the walls shouldn't point to anything
                 #if node_array[x][y].data != '%': #this makes the % nodes have no children. If we want to change it back just remove the comment
                 node_array[x][y].up = node_array[x-1][y]
