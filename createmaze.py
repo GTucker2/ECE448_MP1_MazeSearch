@@ -44,7 +44,7 @@ def loadMaze(filename, maze):
     return mazeinfo                                 #returns the class so that it is useful outside of this function
 
 def print_maze(maze, file_name):
-    ''' printMaze
+    ''' print_maze
         Griffin A. Tucker
         Runs through a given array of mazedata and prints it to console
         Accepts: 

@@ -17,9 +17,9 @@ def bredth_first(maze_data, root, goal):
         January 25 2018
         Performs a bredth-first search on a given tree.
         Accepts:
+            maze_data : a 2d array of characters 
             root  : a tree to perform the search on
-            start : a start node to begin from
-            goal  : a goal node to search for
+            goal  : a goal character value to search for
         Returns:
             1 : if the goal is found
             0 : if the goal is not found
@@ -35,7 +35,8 @@ def bredth_first(maze_data, root, goal):
     q.enqueue(root)    
 
     # While the q is not empty, get the next node on the queue
-    # and check for the goal. If at the goal, return 1. Else,
+    # and check for the goal. If at the goal, copy the successful
+    # path to the array of mazedata and then return 1. Else,
     # expand the node to the queue. 
     while q.size() > 0:       
         cur = q.dequeue() 
@@ -43,7 +44,6 @@ def bredth_first(maze_data, root, goal):
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
                 while cur.data is not 'P':
-                    print(cur.visited_from)    
                     if cur.visited_from == "down":
                         cur = cur.down
                     elif cur.visited_from == "up":
@@ -52,22 +52,26 @@ def bredth_first(maze_data, root, goal):
                         cur = cur.right
                     elif cur.visited_from == "left":
                         cur = cur.left 
-                    else : return 0
-                    maze_data[cur.x][cur.y] = '^'
+                    if cur.data is not '.' and cur.data is not 'P':
+                        maze_data[cur.x][cur.y] = '^'
                 return 1
             else:                 
                 if cur.up is not None and cur.up.data is not '%': 
                     q.enqueue(cur.up)
-                    cur.up.visited_from = "down"
+                    if cur.up.visited_from == "not":
+                        cur.up.visited_from = "down"
                 if cur.down is not None and cur.down.data is not '%': 
                     q.enqueue(cur.down)
-                    cur.down.visited_from = "up"
+                    if cur.down.visited_from == "not":
+                        cur.down.visited_from = "up"
                 if cur.left is not None and cur.left.data is not '%': 
                     q.enqueue(cur.left)
-                    cur.left.visited_from = "right"
+                    if cur.left.visited_from == "not":
+                        cur.left.visited_from = "right"
                 if cur.right is not None and cur.right.data is not '%': 
                     q.enqueue(cur.right)
-                    cur.right.visited_from = "left"
+                    if cur.right.visited_from == "not":
+                        cur.right.visited_from = "left"
             cur.traversed = True
 
     # Return 0 if goal was not found
