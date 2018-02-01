@@ -34,7 +34,7 @@ class MazeTree:
     #        start_x   - the x position of the starting point
     #        start_y   - the y postiion of the starting point
     # return: the root of the tree/graph
-    def create_tree(self, maze, start_x, start_y):
+    def create_tree(self, maze, mazeInfo, start_x, start_y):
         # initilize 2d array and fill with tree nodes; the data doesn't matter so just do the index 0,0 for all
         node_array = [[MazeTree.create_node(maze[0][0], 0, 0) for x in range(len(maze))] for y in range(len(maze))] 
 
@@ -44,8 +44,8 @@ class MazeTree:
                 node_array[x][y] = MazeTree.create_node(maze[x][y], x, y)
 
         # create the full tree/graph from the array
-        for x in range(1, len(maze)-1):
-            for y in range(1, len(maze)-1):
+        for x in range(1, mazeInfo.h):
+            for y in range(1, mazeInfo.w):
                 # nodes should point to the walls but the walls shouldn't point to anything
                 #if node_array[x][y].data != '%': #this makes the % nodes have no children. If we want to change it back just remove the comment
                 node_array[x][y].up = node_array[x-1][y]

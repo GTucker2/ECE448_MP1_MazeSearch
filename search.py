@@ -11,7 +11,7 @@ import queue
         greedy-first search, and A* search. 
 '''
 
-def bredth_first(root, goal):
+def bredth_first(maze_data, root, goal):
     ''' bredth_first
         Griffin A. Tucker
         January 25 2018
@@ -25,8 +25,7 @@ def bredth_first(root, goal):
             0 : if the goal is not found
     '''
     # Check if the tree is valid. If it is not, return 0.
-    if root is None: return 0 
-    print(root.data)
+    if root is None: return 0
 
     # Declare a queue and enqueue the starting node.
     q = queue.Queue()         
@@ -37,17 +36,20 @@ def bredth_first(root, goal):
     # expand the node to the queue. 
     while q.size() > 0:       
         cur = q.dequeue() 
-        print(cur.data)
-        if cur.visited is false:
-            if cur.data is goal: return 1
+        maze_data[cur.x][cur.y] = '^'
+        if cur.visited is False:
+            if cur.data is goal: 
+                print("success")
+                return 1
             else:                 
-                if cur.up is not None: q.enqueue(cur.up)
-                if cur.down is not None: q.enqueue(cur.down)
-                if cur.left is not None: q.enqueue(cur.right)
-                if cur.right is not None: q.enqueue(cur.left)
-            cur.visited = true
+                if cur.up is not None and cur.up.data is not '%': q.enqueue(cur.up)
+                if cur.down is not None and cur.down.data is not '%': q.enqueue(cur.down)
+                if cur.left is not None and cur.left.data is not '%': q.enqueue(cur.left)
+                if cur.right is not None and cur.right.data is not '%': q.enqueue(cur.right)
+            cur.visited = True
     
     # Return 0 if goal was not found
+    print("fail")
     return 0
 
 def depth_first():
