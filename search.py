@@ -121,7 +121,7 @@ def depth_first(maze_data, root, goal):
     # Return result 
     return 0
 
-def greedy_first():
+def greedy_first(mazeinfo):
     ''' greedy_first
         Griffin A. Tucker
         FINAL DATE
@@ -131,7 +131,7 @@ def greedy_first():
     '''
     return 0
 
-def a_star():
+def a_star(mazeinfo):
     ''' a_star
         Griffin A. Tucker
         FINAL DATE
@@ -139,6 +139,9 @@ def a_star():
              graph.
         This function returns 0 for now.
     '''
+
+    mhd = manhattan_distance(mazeinfo, mazeinfo.startpx, mazeinfo.startpy)
+    print(mhd)
     return 0
 
 def retrace(goal, maze_data):
@@ -179,3 +182,8 @@ def retrace(goal, maze_data):
 
     # Return successful
     return 1
+
+def manhattan_distance(mazeinfo, curx, cury):
+    #print(mazeinfo.endpx, mazeinfo.endpy, curx, cury)
+    return abs(mazeinfo.endpx - curx) + abs(mazeinfo.endpy - cury)
+
