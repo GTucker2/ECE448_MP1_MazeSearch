@@ -1,6 +1,6 @@
 import stack
 import queue
-import pqueue
+import heapq
 
 ''' search.py
     Griffin A. Tucker
