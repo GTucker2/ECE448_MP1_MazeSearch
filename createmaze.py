@@ -25,21 +25,26 @@ def loadMaze(filename, maze):
         chars = chars + len(line)
  
     width = int(chars/height)                       #calculating the width
-    mazeinfo = mInfo(height, width, 0, 0, 0, 0)     #initializing the mInfo class with it's relevant info
+    endpx = []
+    endpy = []
+    mazeinfo = mInfo(height, width, 0, 0, endpx, endpy)     #initializing the mInfo class with it's relevant info
     
     for column in mazefile:                         #sets up 2d matrix
         column = column.strip()                     #These 4 lines of code are from the following link
         row = [i for i in column]                   #Link: https://stackoverflow.com/questions/40943108/reading-a-maze-file-in-python-and-printing-out-the-maze-line-by-line
         maze.append(row)                            #
-
+    
+    
     for i in range(0, mazeinfo.h):                                  #prints out the read in textfile
         for j in range(0, mazeinfo.w):                              #basically proves that I read in the file correctly
             if maze[i][j] == 'P':                                   #gets the x,y coordinates of the starting point
                 mazeinfo.startpx = i
                 mazeinfo.startpy = j
-            if maze[i][j] == '.':                                   #gets the x,y coordinates of the ending point
-                mazeinfo.endpx = i                                  #NOTE: Does not work with the multiple endpoint mazes, still need to work on that.
-                mazeinfo.endpy = j
+            elif maze[i][j] == '.':                                   #gets the x,y coordinates of all ending points and store them
+                mazeinfo.endpx.append(i)                              #in separate x, y lists
+                mazeinfo.endpy.append(j)
+                
+            
     
     return mazeinfo                                 #returns the class so that it is useful outside of this function
 
