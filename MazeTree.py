@@ -11,6 +11,9 @@ class MazeTree:
         self.data = 'empty'
         self.x = -1
         self.y = -1
+        self.f = -1
+        self.g = -1
+        self.h = -1
         self.up = None
         self.down = None
         self.left = None

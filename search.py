@@ -1,5 +1,6 @@
 import stack
 import queue
+import pqueue
 
 ''' search.py
     Griffin A. Tucker
@@ -184,6 +185,14 @@ def retrace(goal, maze_data):
     return 1
 
 def manhattan_distance(mazeinfo, curx, cury):
+    '''
+       Function finds the manhattan distance between the point passed and the 
+       end point of the maze.
+       Returns that value
+    '''
     #print(mazeinfo.endpx, mazeinfo.endpy, curx, cury)
     return abs(mazeinfo.endpx - curx) + abs(mazeinfo.endpy - cury)
 
+
+def astar_heuristic():
+    return 0
