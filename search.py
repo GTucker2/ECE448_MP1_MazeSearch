@@ -1,6 +1,7 @@
 import stack
 import queue
 import heapq
+import math
 
 ''' search.py
     Griffin A. Tucker
@@ -209,7 +210,7 @@ def a_star(mazeinfo):
         This function returns 0 for now.
     '''
 
-    mhd = manhattan_distance(mazeinfo.startpx, mazeinfo.startpy, mazeinfo.endpx[0], mazeinfo.endpy[0])
+    mhd = astar_heuristic(
     print(mhd)
     return 0
 
@@ -299,5 +300,11 @@ def h_enqueue(queue, Q, A, h):
     # Return the final queue
     return queue
 
-def astar_heuristic():
-    return 0
+def astar_heuristic(cur, goal):
+    '''
+        Finds the Euclidian distance between two points
+        Good heuristic for a single goal state
+        but not sure how to translate to multiple
+    '''
+                          
+    return math.sqrt((abs(goal.x - cur.x)**2) + (abs(goal.y - cur.y)**2))
