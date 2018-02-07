@@ -11,6 +11,7 @@ ECE448 MP1; search algorithms on trees.
 Note: The files cataloged here are only those which have been written by the developers and external parties. System-generated files will not be listed.
 
 ### Primary
+The top level of the directory. All main project files may be found here as well as the project documentation.
 #### Documentation
 * [README.md](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/README.md) - Summary of project and project contents
 #### Project
