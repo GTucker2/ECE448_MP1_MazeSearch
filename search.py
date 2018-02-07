@@ -11,7 +11,7 @@ import heapq
         bredth-first search, depth-first search,
         greedy-first search, and A* search. 
 '''
-
+#YOU SPELLED IT WRONG BOI
 def bredth_first(maze_data, root, goal):
     ''' bredth_first
         Griffin A. Tucker
