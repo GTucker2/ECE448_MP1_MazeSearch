@@ -135,7 +135,7 @@ def depth_first(maze_data, root, goal):
     nodes_expanded *= -1
     return nodes_expanded 
 
-def greedy_first(maze_data, root, goal):
+def greedy_first(maze_data, root, goals):
     ''' greedy_first
         Griffin A. Tucker
         February 6 2018
@@ -144,7 +144,7 @@ def greedy_first(maze_data, root, goal):
         Accepts:
             maze_data : a 2d array of characters 
             root  : a tree to perform the search on
-            goal  : a goal character value to search for
+            goals  :
         Returns:
             The total number of nodes expanded during the seach.
             This value is negative or 0 if the goal was not found.
@@ -172,7 +172,8 @@ def greedy_first(maze_data, root, goal):
         cur = q.dequeue()
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
-            if cur.data is goal:
+            if cur.data is '.':
+                print(nodes_expanded)
                 retrace(cur, maze_data)
                 return nodes_expanded
             else:
@@ -181,19 +182,19 @@ def greedy_first(maze_data, root, goal):
                     greedy_paths.append(cur.up)
                     if cur.up.visited_from == "not":
                         cur.up.visited_from = "down"
-                if cur.down is not None and cur.up.data is not '%':
+                if cur.down is not None and cur.down.data is not '%':
                     greedy_paths.append(cur.down)
-                    if cur.up.visited_from == "not":
-                        cur.up.visited_from = "up"
-                if cur.left is not None and cur.up.data is not '%':
+                    if cur.down.visited_from == "not":
+                        cur.down.visited_from = "up"
+                if cur.left is not None and cur.left.data is not '%':
                     greedy_paths.append(cur.left)
-                    if cur.up.visited_from == "not":
-                        cur.up.visited_from = "right"
-                if cur.right is not None and cur.up.data is not '%':
+                    if cur.left.visited_from == "not":
+                        cur.left.visited_from = "right"
+                if cur.right is not None and cur.right.data is not '%':
                     greedy_paths.append(cur.right)
-                    if cur.up.visited_from == "not":
-                        cur.up.visited_from = "left"
-                q = h_enqueue(q, greedy_paths, goal, manhattan_distance)
+                    if cur.right.visited_from == "not":
+                        cur.right.visited_from = "left"
+                q = h_enqueue(q, greedy_paths, goals, manhattan_distance)
                 cur.traversed = True 
                 greedy_paths = [] 
 
@@ -210,8 +211,8 @@ def a_star(mazeinfo):
         This function returns 0 for now.
     '''
 
-    mhd = astar_heuristic(
-    print(mhd)
+#    mhd = astar_heuristic(
+#    print(mhd)
     return 0
 
 def retrace(goal, maze_data):
@@ -247,19 +248,21 @@ def retrace(goal, maze_data):
             cur = cur.right
         elif cur.visited_from == "left":
             cur = cur.left 
+        elif cur.visited_from == "not":
+            return 0
         if cur.data is not '.' and cur.data is not 'P':
             maze_data[cur.x][cur.y] = '^'
 
     # Return successful
     return 1
 
-def manhattan_distance(cur, goal):
+def manhattan_distance(curx, goalx, cury, goaly):
     '''
        Function finds the manhattan distance between the point passed and the 
        end point of the maze.
        Returns that value
     '''
-    return abs(goal.x - cur.x) + abs(goal.y - cur.y)
+    return abs(goalx - curx) + abs(goaly - cury)
 
 def h_enqueue(queue, Q, A, h):
     ''' max_manhattan_remove
@@ -284,15 +287,16 @@ def h_enqueue(queue, Q, A, h):
     # Copy the states (we do not want to modify the original set)
     h_vals = []
     Q_copy = []
-    for q in Q:
-        Q_copy.append(q)
-        h_vals.append(h(q,A))
+    for state_idx in range(0, len(Q)):
+        new_q = Q[state_idx]
+        Q_copy.append(new_q)
+        h_vals.append(h(new_q.x, A[0][0], new_q.y, A[1][0]))
 
     # Enqueue onto the queue each state q in Q (sorry) based on sorted
     # h values of the states.
     while len(Q_copy) > 0:
         best_h = min(h_vals) 
-        best_q = Q_copy[Q_copy.index(best_h)]
+        best_q = Q_copy[h_vals.index(best_h)]
         queue.enqueue(best_q)
         Q_copy.remove(best_q)
         h_vals.remove(best_h)

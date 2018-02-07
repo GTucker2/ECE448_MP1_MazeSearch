@@ -21,10 +21,10 @@ maze_tree = MazeTree.MazeTree()
 maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo, mazeinfo.startpx, mazeinfo.startpy)
 
 # Perform a search on the maze and export solution
-if searchtype == "BFS": search.bredth_first(ascii_maze, maze_tree, '.')
-elif searchtype == "DFS": search.depth_first(ascii_maze, maze_tree, '.')
-elif searchtype == "GREEDY": search.greedy_first(mazeinfo)
-elif searchtype == "ASTAR": search.a_star(mazeinfo)
+if searchtype == "BFS": nodes_expanded = search.bredth_first(ascii_maze, maze_tree, '.')
+elif searchtype == "DFS": nodes_expanded = search.depth_first(ascii_maze, maze_tree, '.')
+elif searchtype == "GREEDY": nodes_expanded = search.greedy_first(ascii_maze, maze_tree, (mazeinfo.endpx, mazeinfo.endpy))
+elif searchtype == "ASTAR": nodes_expanded = search.a_star(mazeinfo)
 
-outputname = input(" Please enter the desired outputfile name (.txt) ")
-createmaze.print_maze(ascii_maze, outputname)
+outputname = input("Please enter the desired outputfile name (.txt)")
+createmaze.print_maze(ascii_maze, nodes_expanded, outputname)
