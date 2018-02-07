@@ -10,10 +10,10 @@ ECE448 MP1; search algorithms on trees.
 
 Note: The files cataloged here are only those which have been written by the developers and external parties. System-generated files will not be listed.
 
-### Documentation
-* [README.md](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/README.md) - Summary of project and project contents
-
 ### Primary
+#### Documentation
+* [README.md](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/README.md) - Summary of project and project contents
+#### Project
 * [main.py](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/main.py) - Main function; handles most if not all user interaction 
 * [search.py](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/search.py) - Functions to perform BFS, DFS, greedy-first search, and A* search on mazes, and their helper functions 
 * [createmaze.py](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/createmaze.py) - Functions to read-in and print-out text-maze files
