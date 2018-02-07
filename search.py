@@ -141,7 +141,7 @@ def a_star(mazeinfo):
         This function returns 0 for now.
     '''
 
-    mhd = manhattan_distance(mazeinfo, mazeinfo.startpx, mazeinfo.startpy)
+    mhd = manhattan_distance(mazeinfo.startpx, mazeinfo.startpy, mazeinfo.endpx[0], mazeinfo.endpy[0])
     print(mhd)
     return 0
 
@@ -184,14 +184,14 @@ def retrace(goal, maze_data):
     # Return successful
     return 1
 
-def manhattan_distance(mazeinfo, curx, cury):
+def manhattan_distance(curx, cury, goalx, goaly):
     '''
        Function finds the manhattan distance between the point passed and the 
        end point of the maze.
        Returns that value
     '''
     #print(mazeinfo.endpx, mazeinfo.endpy, curx, cury)
-    return abs(mazeinfo.endpx - curx) + abs(mazeinfo.endpy - cury)
+    return abs(goalx - curx) + abs(goaly - cury)
 
 
 def astar_heuristic():
