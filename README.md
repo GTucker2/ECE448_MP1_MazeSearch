@@ -12,9 +12,9 @@ Note: The files cataloged here are only those which have been written by the dev
 
 ### Primary
 The top level of the project directory. All main project files may be found here as well as the project documentation.
-#### Documentation
+###### Documentation
 * [README.md](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/README.md) - Summary of project and project contents
-#### Project
+###### Project
 * [main.py](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/main.py) - Main function; handles most if not all user interaction 
 * [search.py](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/search.py) - Functions to perform BFS, DFS, greedy-first search, and A* search on mazes, and their helper functions 
 * [createmaze.py](https://github.com/GTucker2/ECE448_MP1_MazeSearch/blob/master/createmaze.py) - Functions to read-in and print-out text-maze files
