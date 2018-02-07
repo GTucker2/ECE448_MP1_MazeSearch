@@ -22,8 +22,9 @@ def bredth_first(maze_data, root, goal):
             root  : a tree to perform the search on
             goal  : a goal character value to search for
         Returns:
-            1 : if the goal is found
-            0 : if the goal is not found
+            The total number of expanded nodes. 
+                If > 0: the goal was found
+                If <= 0: the goal was not found
     '''
     # Check if the tree is valid. If it is not, return 0.
     if root is None: return 0
@@ -32,6 +33,10 @@ def bredth_first(maze_data, root, goal):
     # Declare a queue and enqueue the starting node.
     q = queue.Queue()         
     q.enqueue(root)    
+
+    # Declare a counter for the number of nodes expanded. 
+    # Set it to zero.
+    nodes_expanded = 0
 
     # While the q is not empty, get the next node on the queue
     # and check for the goal. If at the goal, copy the successful
@@ -43,8 +48,9 @@ def bredth_first(maze_data, root, goal):
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
                 retrace(cur, maze_data)
-                return 1
-            else:                 
+                return nodes_expanded 
+            else:    
+                nodes_expanded += 1       
                 if cur.up is not None and cur.up.data is not '%': 
                     q.enqueue(cur.up)
                     if cur.up.visited_from == "not":
@@ -63,8 +69,9 @@ def bredth_first(maze_data, root, goal):
                         cur.right.visited_from = "left"
             cur.traversed = True
 
-    # Return 0 if goal was not found
-    return 0
+    # Return the negative number of expanded nodes since no goal found
+    nodes_expanded *= -1
+    return nodes_expanded 
 
 def depth_first(maze_data, root, goal):
     ''' depth_first
@@ -72,7 +79,6 @@ def depth_first(maze_data, root, goal):
         February 3 2018
         This function performs a depth-first search on
             a given graph.
-        This function returns 0 for now.
         Accepts:
             maze_data : a 2d array of characters 
             root  : a tree to perform the search on
@@ -89,6 +95,10 @@ def depth_first(maze_data, root, goal):
     s = stack.Stack()
     s.push(root)
 
+    # Declare a counter for the number of nodes expanded. 
+    # Set it to zero.
+    nodes_expanded = 0
+
     # While the stack is not empty, get the next node on the stack
     # and check for the goal. If at the goal, copy the successful
     # path to the array of mazedata and then return 1. Else,
@@ -99,8 +109,9 @@ def depth_first(maze_data, root, goal):
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
                 retrace(cur, maze_data)
-                return 1
-            else:                 
+                return nodes_expanded
+            else:       
+                nodes_expanded += 1          
                 if cur.up is not None and cur.up.data is not '%': 
                     s.push(cur.up)
                     if cur.up.visited_from == "not":
@@ -119,22 +130,79 @@ def depth_first(maze_data, root, goal):
                         cur.right.visited_from = "left"
             cur.traversed = True
 
-    # Return result 
-    return 0
+    # Return the number of nodes expanded; negative since no goal found
+    nodes_expanded *= -1
+    return nodes_expanded 
 
-def greedy_first(mazeinfo):
+def greedy_first(maze_data, root, goal):
     ''' greedy_first
         Griffin A. Tucker
-        FINAL DATE
+        February 6 2018
         This function performs a greedy-first search on
             a given graph.
-        This function returns 0 for now.
+        Accepts:
+            maze_data : a 2d array of characters 
+            root  : a tree to perform the search on
+            goal  : a goal character value to search for
+        Returns:
+            The total number of nodes expanded during the seach.
+            This value is negative or 0 if the goal was not found.
     '''
-    return 0
+    # Check if the tree is valid. If it is not, return 0
+    if root is None: return 0
+    else: root.visited_from = "root"
+    
+    # Declare a queue and enqueue the starting node
+    q = queue.Queue()
+    q.enqueue(root)
+
+    # Declare a list for sorting node paths based on heuristic
+    greedy_paths = []
+
+    # Declare a counter for the number of nodes expanded. 
+    # Set it to zero.
+    nodes_expanded = 0  
+
+    # While the q is not empty, get the next node on the queue
+    # and check for the goal. If at the goal, copy the successful
+    # path to the array of mazedata and then return 1. Else, expand
+    # the node based on the manhattan distance heuristic.a_star
+    while q.size() > 0:
+        cur = q.dequeue()
+        if cur.traversed is False:
+            if cur.data is 'P': cur.traversed = True
+            if cur.data is goal:
+                retrace(cur, maze_data)
+                return nodes_expanded
+            else:
+                nodes_expanded += 1
+                if cur.up is not None and cur.up.data is not '%':
+                    greedy_paths.append(cur.up)
+                    if cur.up.visited_from == "not":
+                        cur.up.visited_from = "down"
+                if cur.down is not None and cur.up.data is not '%':
+                    greedy_paths.append(cur.down)
+                    if cur.up.visited_from == "not":
+                        cur.up.visited_from = "up"
+                if cur.left is not None and cur.up.data is not '%':
+                    greedy_paths.append(cur.left)
+                    if cur.up.visited_from == "not":
+                        cur.up.visited_from = "right"
+                if cur.right is not None and cur.up.data is not '%':
+                    greedy_paths.append(cur.right)
+                    if cur.up.visited_from == "not":
+                        cur.up.visited_from = "left"
+                q = h_enqueue(q, greedy_paths, goal, manhattan_distance)
+                cur.traversed = True 
+                greedy_paths = [] 
+
+    # Return the negative number of nodes expanded since goal not found
+    nodes_expanded *= -1
+    return nodes_expanded
 
 def a_star(mazeinfo):
     ''' a_star
-        Griffin A. Tucker
+        Michael Racine
         FINAL DATE
         This function performs an A* search on a given
              graph.
@@ -184,15 +252,52 @@ def retrace(goal, maze_data):
     # Return successful
     return 1
 
-def manhattan_distance(curx, cury, goalx, goaly):
+def manhattan_distance(cur, goal):
     '''
        Function finds the manhattan distance between the point passed and the 
        end point of the maze.
        Returns that value
     '''
-    #print(mazeinfo.endpx, mazeinfo.endpy, curx, cury)
-    return abs(goalx - curx) + abs(goaly - cury)
+    return abs(goal.x - cur.x) + abs(goal.y - cur.y)
 
+def h_enqueue(queue, Q, A, h):
+    ''' max_manhattan_remove
+        Griffin A. Tucker
+        Febraury 6 2018
+        This function takes a set of states (Q) and enqueues them to
+            a given queue based on a supploed heuristic (h) with respect
+            to a given accept state (A)
+        Accepts:
+            queue : The queue to enqueue a set of states to
+            Q : A set of states to be enqueued to the queue
+            A : An accepting state with which to use the heuristic with
+            h : A heuristic function to base the enqueue on 
+        Returns:
+            The queue with all states enqueued
+    '''
+    # Check for valid parameters. If we fail, return the unmodified queue
+    if queue is None or Q is None or A is None or h is None:
+        return queue
+
+    # Create and fill a list of heuristic values 
+    # Copy the states (we do not want to modify the original set)
+    h_vals = []
+    Q_copy = []
+    for q in Q:
+        Q_copy.append(q)
+        h_vals.append(h(q,A))
+
+    # Enqueue onto the queue each state q in Q (sorry) based on sorted
+    # h values of the states.
+    while len(Q_copy) > 0:
+        best_h = min(h_vals) 
+        best_q = Q_copy[Q_copy.index(best_h)]
+        queue.enqueue(best_q)
+        Q_copy.remove(best_q)
+        h_vals.remove(best_h)
+
+    # Return the final queue
+    return queue
 
 def astar_heuristic():
     return 0
