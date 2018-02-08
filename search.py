@@ -202,18 +202,71 @@ def greedy_first(maze_data, root, goals):
     nodes_expanded *= -1
     return nodes_expanded
 
-def a_star(mazeinfo):
+def a_star(maze_data, mazeinfo, root, goal):
     ''' a_star
         Michael Racine
         FINAL DATE
         This function performs an A* search on a given
              graph.
+        Accepts:
+            maze_data : a 2d array of characters 
+            root  : a tree to perform the search on
+            goal  : a goal character value to search for
+        Returns:
+            1 : if the goal is found
+            0 : if the goal is not found
         This function returns 0 for now.
     '''
+     # Check if the tree is valid. If it is not, return 0.
+    if root is None: return 0
+    else: root.visited_from = "root"
 
+    # Declare a queue and enqueue the starting node.
+    q = queue.Queue()         
+    q.enqueue(root)    
+
+    # Declare a counter for the number of nodes expanded. 
+    # Set it to zero.
+    nodes_expanded = 0
+
+    # While the q is not empty, get the next node on the queue
+    # and check for the goal. If at the goal, copy the successful
+    # path to the array of mazedata and then return 1. Else,
+    # expand the node to the queue. 
+    while q.size() > 0:       
+        cur = q.dequeue() 
+        if cur.traversed is False:
+            if cur.data is 'P': cur.traversed = True
+            if cur.data is goal: 
+                retrace(cur, maze_data)
+                return nodes_expanded 
+            else:    
+                nodes_expanded += 1      
+                Q = []
+                if cur.up is not None and cur.up.data is not '%': 
+                    Q.append(cur.up)
+                    if cur.up.visited_from == "not":
+                        cur.up.visited_from = "down"
+                if cur.down is not None and cur.down.data is not '%': 
+                    Q.append(cur.down)
+                    if cur.down.visited_from == "not":
+                        cur.down.visited_from = "up"
+                if cur.left is not None and cur.left.data is not '%': 
+                    Q.append(cur.left)
+                    if cur.left.visited_from == "not":
+                        cur.left.visited_from = "right"
+                if cur.right is not None and cur.right.data is not '%': 
+                    Q.append(cur.right)
+                    if cur.right.visited_from == "not":
+                        cur.right.visited_from = "left"
+                h_enqueue(q, Q, (mazeinfo.endpx, mazeinfo.endpy), manhattan_distance)
+            cur.traversed = True
+
+    # Return the negative number of expanded nodes since no goal found
+    nodes_expanded *= -1
+    return nodes_expanded 
 #    mhd = astar_heuristic(
 #    print(mhd)
-    return 0
 
 def retrace(goal, maze_data):
     ''' retrace

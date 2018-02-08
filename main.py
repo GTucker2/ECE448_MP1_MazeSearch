@@ -24,7 +24,7 @@ maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo, mazeinfo.startpx, mazein
 if searchtype == "BFS": nodes_expanded = search.bredth_first(ascii_maze, maze_tree, '.')
 elif searchtype == "DFS": nodes_expanded = search.depth_first(ascii_maze, maze_tree, '.')
 elif searchtype == "GREEDY": nodes_expanded = search.greedy_first(ascii_maze, maze_tree, (mazeinfo.endpx, mazeinfo.endpy))
-elif searchtype == "ASTAR": nodes_expanded = search.a_star(mazeinfo)
+elif searchtype == "ASTAR": nodes_expanded = search.a_star(ascii_maze, mazeinfo, maze_tree, '.')
 
 outputname = input("Please enter the desired outputfile name (.txt)")
 createmaze.print_maze(ascii_maze, nodes_expanded, outputname)
