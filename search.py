@@ -243,19 +243,19 @@ def a_star(maze_data, mazeinfo, root, goal):
             else:    
                 nodes_expanded += 1      
                 Q = []
-                if cur.up is not None and cur.up.data is not '%': 
+                if cur.up is not None and cur.up.data is not '%' and cur.up.traversed is False: 
                     Q.append(cur.up)
                     if cur.up.visited_from == "not":
                         cur.up.visited_from = "down"
-                if cur.down is not None and cur.down.data is not '%': 
+                if cur.down is not None and cur.down.data is not '%' and cur.down.traversed is False: 
                     Q.append(cur.down)
                     if cur.down.visited_from == "not":
                         cur.down.visited_from = "up"
-                if cur.left is not None and cur.left.data is not '%': 
+                if cur.left is not None and cur.left.data is not '%' and cur.left.traversed is False: 
                     Q.append(cur.left)
                     if cur.left.visited_from == "not":
                         cur.left.visited_from = "right"
-                if cur.right is not None and cur.right.data is not '%': 
+                if cur.right is not None and cur.right.data is not '%' and cur.right.traversed is False: 
                     Q.append(cur.right)
                     if cur.right.visited_from == "not":
                         cur.right.visited_from = "left"
