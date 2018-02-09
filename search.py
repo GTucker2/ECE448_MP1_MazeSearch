@@ -48,8 +48,7 @@ def bredth_first(maze_data, root, goal):
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
-                retrace(cur, maze_data)
-                return nodes_expanded 
+                return (nodes_expanded, retrace(cur, maze_data))
             else:    
                 nodes_expanded += 1       
                 if cur.up is not None and cur.up.data is not '%': 
@@ -72,7 +71,7 @@ def bredth_first(maze_data, root, goal):
 
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
-    return nodes_expanded 
+    return (nodes_expanded, 0) 
 
 def depth_first(maze_data, root, goal):
     ''' depth_first
@@ -109,8 +108,7 @@ def depth_first(maze_data, root, goal):
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
-                retrace(cur, maze_data)
-                return nodes_expanded
+                return (nodes_expanded, retrace(cur, maze_data))
             else:       
                 nodes_expanded += 1          
                 if cur.up is not None and cur.up.data is not '%': 
@@ -133,7 +131,7 @@ def depth_first(maze_data, root, goal):
 
     # Return the number of nodes expanded; negative since no goal found
     nodes_expanded *= -1
-    return nodes_expanded 
+    return (nodes_expanded, 0) 
 
 def greedy_first(maze_data, root, goals):
     ''' greedy_first
@@ -173,9 +171,7 @@ def greedy_first(maze_data, root, goals):
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
             if cur.data is '.':
-                print(nodes_expanded)
-                retrace(cur, maze_data)
-                return nodes_expanded
+                return (nodes_expanded, retrace(cur, maze_data))
             else:
                 nodes_expanded += 1
                 if cur.up is not None and cur.up.data is not '%':
@@ -200,7 +196,7 @@ def greedy_first(maze_data, root, goals):
 
     # Return the negative number of nodes expanded since goal not found
     nodes_expanded *= -1
-    return nodes_expanded
+    return (nodes_expanded, 0)
 
 def a_star(maze_data, mazeinfo, root, goal):
     ''' a_star
@@ -238,8 +234,7 @@ def a_star(maze_data, mazeinfo, root, goal):
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
-                retrace(cur, maze_data)
-                return nodes_expanded 
+                return (nodes_expanded, retrace(cur, maze_data))
             else:    
                 nodes_expanded += 1      
                 Q = []
@@ -264,7 +259,7 @@ def a_star(maze_data, mazeinfo, root, goal):
 
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
-    return nodes_expanded 
+    return (nodes_expanded, 0) 
 #    mhd = astar_heuristic(
 #    print(mhd)
 
@@ -286,6 +281,9 @@ def retrace(goal, maze_data):
     if goal is None or maze_data is None:
         return 0
 
+    # Instantiate a step counter 
+    steps_taken = 0 
+
     # Set the current node being visited as the provided
     # goal node.
     cur = goal
@@ -293,6 +291,7 @@ def retrace(goal, maze_data):
     # Traverse a back path from the goal node to the start
     # node. 
     while cur.data is not 'P':
+        steps_taken += 1
         if cur.visited_from == "down":
             cur = cur.down
         elif cur.visited_from == "up":
@@ -304,10 +303,11 @@ def retrace(goal, maze_data):
         elif cur.visited_from == "not":
             return 0
         if cur.data is not '.' and cur.data is not 'P':
-            maze_data[cur.x][cur.y] = '^'
+            maze_data[cur.x][cur.y] = '.'
 
     # Return successful
-    return 1
+    steps_taken += 1
+    return steps_taken
 
 def manhattan_distance(curx, goalx, cury, goaly):
     '''

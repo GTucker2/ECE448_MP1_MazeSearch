@@ -48,7 +48,7 @@ def loadMaze(filename, maze):
     
     return mazeinfo                                 #returns the class so that it is useful outside of this function
 
-def print_maze(maze, nodes_expanded, file_name):
+def print_maze(maze, NodesExp_StepsTaken, file_name):
     ''' print_maze
         Griffin A. Tucker
         Runs through a given array of mazedata and prints it to console
@@ -80,7 +80,8 @@ def print_maze(maze, nodes_expanded, file_name):
                         fo.write(maze[i][j])
             fo.write('\n')
         # Write the # nodes visited to the output solution
-        fo.write("Nodes expanded: " + str(nodes_expanded))
+        fo.write("Nodes expanded: " + str(NodesExp_StepsTaken[0]) + ' \n')
+        fo.write("Steps taken: " + str(NodesExp_StepsTaken[1]) + ' \n') 
         fo.write('\n')
     # Return successful 
     fo.close()
