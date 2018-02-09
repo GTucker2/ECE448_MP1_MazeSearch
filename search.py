@@ -260,8 +260,6 @@ def a_star(maze_data, mazeinfo, root, goal):
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
     return (nodes_expanded, 0) 
-#    mhd = astar_heuristic(
-#    print(mhd)
 
 def retrace(goal, maze_data):
     ''' retrace
@@ -336,6 +334,9 @@ def h_enqueue(queue, Q, A, h):
     if queue is None or Q is None or A is None or h is None:
         return queue
 
+    # for i in range(0, len(Q)):
+    #    print(str(Q[i].x))
+
     # Create and fill a list of heuristic values 
     # Copy the states (we do not want to modify the original set)
     h_vals = []
@@ -353,6 +354,9 @@ def h_enqueue(queue, Q, A, h):
         queue.enqueue(best_q)
         Q_copy.remove(best_q)
         h_vals.remove(best_h)
+
+    # for i in range(0, queue.size()):
+    #    print(" " + str(queue.dequeue))
 
     # Return the final queue
     return queue
