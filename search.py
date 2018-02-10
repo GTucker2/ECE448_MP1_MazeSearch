@@ -201,7 +201,7 @@ def greedy_first(maze_data, root, goals):
 
 def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     ''' a_star
-        Michael Racine + Griffin A. Tucker
+        Griffin A. Tucker
         FINAL DATE
         This function performs an A* search on a given
              graph.
@@ -230,6 +230,12 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     q = []     
     q.append(root)    
 
+    # Save the root as the current location of the traversal
+    cur = root
+
+    # Create a list to store neighbors of the current node
+    neighbors = []
+
     # Declare a counter for the number of nodes expanded. 
     # Set it to zero.
     nodes_expanded = 0
@@ -246,56 +252,34 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     # and check for the goal. If at the goal, copy the successful
     # path to the array of mazedata and then return 1. Else,
     # expand the node to the queue. 
-    while len(q) > 0:   
-        cur = q[0]
+    while len(q) > 0:
+        min_val = None
+        neighbors = []
         for node in q:
-            if (cur.x, cur.y) not in f or ((node.x, node.y) in f and f[(node.x, node.y)] < f[(cur.x, cur.y)]): 
-                cur = node 
-                q.remove(node)
+            if min_val is None or f[(node.x, node.y)] <= f[(cur.x, cur.y)]:
+                min_val = f[(node.x, node.y)]
+                cur = node
+        q.remove(cur) 
         if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data))
-        # For the up path
-        if cur.up is not None and cur.up.data is not '%':
-            if cur.up.traversed is False: 
-                q.append(cur.up)
-                if cur.up.visited_from == "not":
-                    cur.up.visited_from = "down"
-            g_tentative = g[(cur.x, cur.y)] + 1
-            if (cur.up.x, cur.up.y) not in g or g_tentative < g[(cur.up.x, cur.up.y)]:
-                g[(cur.up.x, cur.up.y)] = g_tentative
-                f[(cur.up.x, cur.up.y)] = g_tentative + manhattan_distance(cur.up.x, goals[0][0], cur.up.y, goals[1][0])
-        # For the down path
-        if cur.down is not None and cur.down.data is not '%':
-            if cur.down.traversed is False: 
-                q.append(cur.down)
-                if cur.down.visited_from == "not":
-                    cur.down.visited_from = "up"
-            g_tentative = g[(cur.x, cur.y)] + 1
-            if (cur.down.x, cur.down.y) not in g or g_tentative < g[(cur.down.x, cur.down.y)]:
-                g[(cur.down.x, cur.down.y)] = g_tentative
-                f[(cur.down.x, cur.down.y)] = g_tentative + manhattan_distance(cur.down.x, goals[0][0], cur.down.y, goals[1][0])
-        # For the left path
-        if cur.left is not None and cur.left.data is not '%':
-            if cur.left.traversed is False: 
-                q.append(cur.left)
-                if cur.left.visited_from == "not":
-                    cur.left.visited_from = "right"
-            g_tentative = g[(cur.x, cur.y)] + 1
-            if (cur.left.x, cur.left.y) not in g or g_tentative < g[(cur.left.x, cur.left.y)]:
-                g[(cur.left.x, cur.left.y)] = g_tentative
-                f[(cur.left.x, cur.left.y)] = g_tentative + manhattan_distance(cur.left.x, goals[0][0], cur.left.y, goals[1][0])
-        # For the right path
-        if cur.right is not None and cur.right.data is not '%':
-            if cur.right.traversed is False: 
-                q.append(cur.right) 
-                if cur.right.visited_from == "not":
-                    cur.right.visited_from = "left"
-            g_tentative = g[(cur.x, cur.y)] + 1
-            if (cur.right.x, cur.right.y) not in g or g_tentative < g[(cur.right.x, cur.right.y)]:
-                g[(cur.right.x, cur.right.y)] = g_tentative
-                f[(cur.right.x, cur.right.y)] = g_tentative + manhattan_distance(cur.right.x, goals[0][0], cur.right.y, goals[1][0])
-        # node is fully traversed
+        neighbors.append(cur.up)
+        neighbors.append(cur.down)
+        neighbors.append(cur.right)
+        neighbors.append(cur.left)
+        for neighbor in neighbors:
+            if neighbor is not None and neighbor.data is not '%':
+                if neighbor.traversed is False:
+                    q.append(neighbor)
+                    if neighbor.visited_from == "not":
+                        if neighbor.up == cur: neighbor.visited_from = "up"
+                        elif neighbor.down == cur: neighbor.visited_from = "down"
+                        elif neighbor.left == cur: neighbor.visited_from = "left"
+                        elif neighbor.right == cur: neighbor.visited_from = "right"
+                g_tentative = g[(cur.x, cur.y)] + 1
+                if(neighbor.x, neighbor.y) not in g or g_tentative < g[(neighbor.x, neighbor.y)]:
+                    g[(neighbor.x, neighbor.y)] = g_tentative
+                    f[(neighbor.x, neighbor.y)] = g_tentative + manhattan_distance(neighbor.x, goals[0][0], neighbor.y, goals[1][0])
         cur.traversed = True
-
+        
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
     return (nodes_expanded, 0) 
