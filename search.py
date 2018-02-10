@@ -171,8 +171,7 @@ def greedy_first(maze_data, root, goals):
         cur = q.dequeue()
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
-            if cur.data is '.':
-                return (nodes_expanded, retrace(cur, maze_data))
+            if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data))
             else:
                 nodes_expanded += 1
                 if cur.up is not None and cur.up.data is not '%':
@@ -261,6 +260,7 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
                 cur = node
         q.remove(cur) 
         if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data))
+        nodes_expanded += 1
         neighbors.append(cur.up)
         neighbors.append(cur.down)
         neighbors.append(cur.right)
@@ -377,9 +377,6 @@ def h_enqueue(queue, Q, A, h):
         queue.enqueue(best_q)
         Q_copy.remove(best_q)
         h_vals.remove(best_h)
-
-    # for i in range(0, queue.size()):
-    #    print(" " + str(queue.dequeue))
 
     # Return the final queue
     return queue
