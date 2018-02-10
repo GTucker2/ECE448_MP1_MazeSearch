@@ -17,14 +17,14 @@ ascii_maze = []
 mazeinfo = createmaze.loadMaze(filename, ascii_maze)   
 
 # Create a graph based on the maze data
-maze_tree = MazeTree.MazeTree()                                                
-maze_tree = maze_tree.create_tree(ascii_maze, mazeinfo, mazeinfo.startpx, mazeinfo.startpy)
+root = MazeTree.MazeTree()                                                
+maze_tree = root.create_tree(ascii_maze, mazeinfo, mazeinfo.startpx, mazeinfo.startpy)
 
 # Perform a search on the maze and export solution
-if searchtype == "BFS": NodesExp_StepsTaken = search.bredth_first(ascii_maze, maze_tree, '.')
-elif searchtype == "DFS": NodesExp_StepsTaken = search.depth_first(ascii_maze, maze_tree, '.')
-elif searchtype == "GREEDY": NodesExp_StepsTaken = search.greedy_first(ascii_maze, maze_tree, (mazeinfo.endpx, mazeinfo.endpy))
-elif searchtype == "ASTAR": NodesExp_StepsTaken = search.a_star(ascii_maze, mazeinfo, maze_tree, '.')
+if searchtype == "BFS": NodesExp_StepsTaken = search.bredth_first(ascii_maze, maze_tree[mazeinfo.startpx][mazeinfo.startpy], '.')
+elif searchtype == "DFS": NodesExp_StepsTaken = search.depth_first(ascii_maze, maze_tree[mazeinfo.startpx][mazeinfo.startpy], '.')
+elif searchtype == "GREEDY": NodesExp_StepsTaken = search.greedy_first(ascii_maze, maze_tree[mazeinfo.startpx][mazeinfo.startpy], (mazeinfo.endpx, mazeinfo.endpy))
+elif searchtype == "ASTAR": NodesExp_StepsTaken = search.a_star(ascii_maze, mazeinfo, maze_tree, maze_tree[mazeinfo.startpx][mazeinfo.startpy], (mazeinfo.endpx, mazeinfo.endpy))
 
 outputname = input("Please enter the desired outputfile name (.txt): ")
 createmaze.print_maze(ascii_maze, NodesExp_StepsTaken, outputname)

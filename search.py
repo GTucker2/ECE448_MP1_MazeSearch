@@ -2,6 +2,7 @@ import stack
 import queue
 import heapq
 import math
+import sd_dict
 
 ''' search.py
     Griffin A. Tucker
@@ -198,9 +199,9 @@ def greedy_first(maze_data, root, goals):
     nodes_expanded *= -1
     return (nodes_expanded, 0)
 
-def a_star(maze_data, mazeinfo, root, goal):
+def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     ''' a_star
-        Michael Racine
+        Michael Racine + Griffin A. Tucker
         FINAL DATE
         This function performs an A* search on a given
              graph.
@@ -213,49 +214,87 @@ def a_star(maze_data, mazeinfo, root, goal):
             0 : if the goal is not found
         This function returns 0 for now.
     '''
-     # Check if the tree is valid. If it is not, return 0.
+    # Check if the tree is valid. If it is not, return 0.
     if root is None: return 0
     else: root.visited_from = "root"
 
-    # Declare a queue and enqueue the starting node.
-    q = queue.Queue()         
-    q.enqueue(root)    
+    # If we have more than one goal, generate actual distances
+    # between points as the heuristic model. Otherwise, use
+    # the manhattan distance
+    if len(goals[0]) > 1: 
+        sd_values = sd_dict(maze_data, maze_tree, mazeinfo) 
+        heuristic = sd_values.get_sd
+    else: heuristic = manhattan_distance
+
+    # Declare a list and append the starting node.
+    q = []     
+    q.append(root)    
 
     # Declare a counter for the number of nodes expanded. 
     # Set it to zero.
     nodes_expanded = 0
 
+    # g is the cost of going from one node to the next
+    # f is the total cost of getting from the start to the goal
+    # by passing a node CHANGE FOR MULTIPLE NODES
+    g = {}
+    f = {}
+    g[(root.x, root.y)] = 0
+    f[(root.x, root.y)] = manhattan_distance(root.x, goals[0][0], root.y, goals[1][0])
+
     # While the q is not empty, get the next node on the queue
     # and check for the goal. If at the goal, copy the successful
     # path to the array of mazedata and then return 1. Else,
     # expand the node to the queue. 
-    while q.size() > 0:       
-        cur = q.dequeue() 
-        if cur.traversed is False:
-            if cur.data is 'P': cur.traversed = True
-            if cur.data is goal: 
-                return (nodes_expanded, retrace(cur, maze_data))
-            else:    
-                nodes_expanded += 1      
-                Q = []
-                if cur.up is not None and cur.up.data is not '%' and cur.up.traversed is False: 
-                    Q.append(cur.up)
-                    if cur.up.visited_from == "not":
-                        cur.up.visited_from = "down"
-                if cur.down is not None and cur.down.data is not '%' and cur.down.traversed is False: 
-                    Q.append(cur.down)
-                    if cur.down.visited_from == "not":
-                        cur.down.visited_from = "up"
-                if cur.left is not None and cur.left.data is not '%' and cur.left.traversed is False: 
-                    Q.append(cur.left)
-                    if cur.left.visited_from == "not":
-                        cur.left.visited_from = "right"
-                if cur.right is not None and cur.right.data is not '%' and cur.right.traversed is False: 
-                    Q.append(cur.right)
-                    if cur.right.visited_from == "not":
-                        cur.right.visited_from = "left"
-                h_enqueue(q, Q, (mazeinfo.endpx, mazeinfo.endpy), manhattan_distance)
-            cur.traversed = True
+    while len(q) > 0:   
+        cur = q[0]
+        for node in q:
+            if (cur.x, cur.y) not in f or ((node.x, node.y) in f and f[(node.x, node.y)] < f[(cur.x, cur.y)]): 
+                cur = node 
+                q.remove(node)
+        if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data))
+        # For the up path
+        if cur.up is not None and cur.up.data is not '%':
+            if cur.up.traversed is False: 
+                q.append(cur.up)
+                if cur.up.visited_from == "not":
+                    cur.up.visited_from = "down"
+            g_tentative = g[(cur.x, cur.y)] + 1
+            if (cur.up.x, cur.up.y) not in g or g_tentative < g[(cur.up.x, cur.up.y)]:
+                g[(cur.up.x, cur.up.y)] = g_tentative
+                f[(cur.up.x, cur.up.y)] = g_tentative + manhattan_distance(cur.up.x, goals[0][0], cur.up.y, goals[1][0])
+        # For the down path
+        if cur.down is not None and cur.down.data is not '%':
+            if cur.down.traversed is False: 
+                q.append(cur.down)
+                if cur.down.visited_from == "not":
+                    cur.down.visited_from = "up"
+            g_tentative = g[(cur.x, cur.y)] + 1
+            if (cur.down.x, cur.down.y) not in g or g_tentative < g[(cur.down.x, cur.down.y)]:
+                g[(cur.down.x, cur.down.y)] = g_tentative
+                f[(cur.down.x, cur.down.y)] = g_tentative + manhattan_distance(cur.down.x, goals[0][0], cur.down.y, goals[1][0])
+        # For the left path
+        if cur.left is not None and cur.left.data is not '%':
+            if cur.left.traversed is False: 
+                q.append(cur.left)
+                if cur.left.visited_from == "not":
+                    cur.left.visited_from = "right"
+            g_tentative = g[(cur.x, cur.y)] + 1
+            if (cur.left.x, cur.left.y) not in g or g_tentative < g[(cur.left.x, cur.left.y)]:
+                g[(cur.left.x, cur.left.y)] = g_tentative
+                f[(cur.left.x, cur.left.y)] = g_tentative + manhattan_distance(cur.left.x, goals[0][0], cur.left.y, goals[1][0])
+        # For the right path
+        if cur.right is not None and cur.right.data is not '%':
+            if cur.right.traversed is False: 
+                q.append(cur.right) 
+                if cur.right.visited_from == "not":
+                    cur.right.visited_from = "left"
+            g_tentative = g[(cur.x, cur.y)] + 1
+            if (cur.right.x, cur.right.y) not in g or g_tentative < g[(cur.right.x, cur.right.y)]:
+                g[(cur.right.x, cur.right.y)] = g_tentative
+                f[(cur.right.x, cur.right.y)] = g_tentative + manhattan_distance(cur.right.x, goals[0][0], cur.right.y, goals[1][0])
+        # node is fully traversed
+        cur.traversed = True
 
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1

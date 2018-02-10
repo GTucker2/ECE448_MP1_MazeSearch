@@ -57,5 +57,5 @@ class MazeTree:
                 node_array[x][y].left = node_array[x][y-1]
                 node_array[x][y].right = node_array[x][y+1]
 
-        # return the root of the tree. this show be the player's position
-        return node_array[start_x][start_y]
+        # return the node array
+        return node_array
