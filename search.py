@@ -221,8 +221,10 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     # between points as the heuristic model. Otherwise, use
     # the manhattan distance
     if len(goals[0]) > 1: 
-        sd_values = sd_dict(maze_data, maze_tree, mazeinfo) 
+        sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         heuristic = sd_values.get_sd
+        while 1 == 1:
+            print(" d")
     else: heuristic = manhattan_distance
 
     # Declare a list and append the starting node.
