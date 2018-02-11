@@ -1,6 +1,7 @@
 import createmaze
 import search
 import consts
+import MazeTree
 
 class sd_dict:
     def __init__(self, maze_data, maze_tree, mazeinfo):
@@ -22,14 +23,16 @@ class sd_dict:
                 # every time, get a new maze 
                 maze_copy = []
                 maze_copy = createmaze.copy_maze(maze_data)
+                root_r = MazeTree.MazeTree()
+                maze_tree_copy = root_r.create_tree(maze_copy, mazeinfo, mazeinfo.startpx, mazeinfo.startpy)
                 end = points[end_point]
                 endx = []
                 endy = []
                 endx.append(end[0])
                 endy.append(end[1])
-                root = maze_tree[start[0]][start[1]]
+                root = maze_tree_copy[start[0]][start[1]]
                 goal = (endx, endy)
-                val = search.a_star(maze_copy, mazeinfo, maze_tree, root, goal)
+                val = search.a_star(maze_copy, mazeinfo, maze_tree_copy, root, goal)
                 self.dict[(start, end)] = val[consts.STEPS_TAKEN_IDX()]
 
     def get_sd(self, curx, goalx, cury, goaly):
