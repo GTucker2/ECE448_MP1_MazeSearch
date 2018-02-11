@@ -225,8 +225,7 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         mst_obj = sd_dict.dict_mst()
         mst_dict = mst_obj.create_mst(sd_values.dict)
-        while 1: duh = 1
-        #traversal_list = a_star_dict(mst, (root.x,root.y), goals)
+        return a_star_mult()
 
     # Declare a list and append the starting node.
     q = []     
@@ -286,36 +285,29 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
         
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
-    return (nodes_expanded, 0) 
+    return (nodes_expanded, 0) or f[(node.x, node.y)] <= f[(cur.x, cur.y)]:
 
-def a_star_dict(mst, start_pt, goals):
+def a_star_mult(sd_data, mst_data, start_xy):
 
-    # Check if we have valid inputs
-    if start_pt is None or sd_dict is None: return 0
-    
-    # Create the list to return; this is the list of xy-points to traverse in order
-    path = []
-    path.append(start_pt)
-
-    # Set the current node being evaluated to the start point.
-    # Add this node to the open set
-    cur = start_pt 
-    open_set = []     
-    open_set.append(cur)    
+    # set the current traversed nodes xy and set it as traversed
+    cur_xy = start_xy
+    mst_data[start_xy].traversed = True 
+    mst_obj = sd_dict.dict_mst()
 
     # g is the cost of going from one node to the next
     # f is the total cost of getting from the start to the goal
-    # by passing a node 
+    # by passing a node CHANGE FOR MULTIPLE NODES
     g = {}
     f = {}
     g[(root.x, root.y)] = 0
-    #f[(root.x, root.y)] = 
+    f[(root.x, root.y)] = sd_dict.get_min_sd(root.x, root.y) + mst_obj.sum_weights(mst_data, sd_data)
 
-    #for goal_i in range(0, len(goals[0])):
-        
-
-    # Return the found path
-    return path
+    '''unvisited = list(sd_data.keys())
+    while len(unvisited) > 0:
+        min_val = None
+        neighbors = []
+        for goal in unvisited:
+            if min_val is None '''
 
 def retrace(goal, maze_data):
     ''' retrace
