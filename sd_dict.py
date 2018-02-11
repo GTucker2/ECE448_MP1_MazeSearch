@@ -18,6 +18,9 @@ class sd_dict:
         for start_point in range(0, len(points)):
             start = points[start_point]
             for end_point in range(0, len(points)):
+                # every time, get a new maze 
+                maze_copy = []
+                maze_copy = createmaze.copy(maze_data)
                 end = points[end_point]
                 endx = []
                 endy = []
@@ -25,7 +28,7 @@ class sd_dict:
                 endy.append(end[1])
                 root = maze_tree[start[0]][start[1]]
                 goal = (endx, endy)
-                val = search.a_star(maze_data, mazeinfo, maze_tree, root, goal)
+                val = search.a_star(maze_copy, mazeinfo, maze_tree, root, goal)
                 self.dict[(start, end)] = val[consts.STEPS_TAKEN_IDX()]
 
     def get_sd(self, curx, goalx, cury, goaly):
