@@ -86,7 +86,18 @@ def print_maze(maze, NodesExp_StepsTaken, file_name):
     # Return successful 
     fo.close()
     return 1
-        
+
+def copy_maze(maze):
+    '''
+        Kaleb Henderson
+        Function takes in a 2d ascii maze and makes another
+        2d ascii copy
+        Input:  maze - 2d array of maze characters
+        Output: a 2d array that is a copy of the input maze array
+    '''
+    mazecopy = list.copy(maze)
+    return mazecopy
+    
 
 
 
