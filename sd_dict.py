@@ -19,7 +19,6 @@ class sd_dict:
         for start_point in range(0, len(points)):
             start = points[start_point]
             for end_point in range(0, len(points)):
-                print(str(start_point) + ":" + str(end_point))
                 # every time, get a new maze 
                 maze_copy = []
                 maze_copy = createmaze.copy_maze(maze_data)
@@ -33,10 +32,55 @@ class sd_dict:
                 root = maze_tree_copy[start[0]][start[1]]
                 goal = (endx, endy)
                 val = search.a_star(maze_copy, mazeinfo, maze_tree_copy, root, goal)
-                self.dict[(start, end)] = val[consts.STEPS_TAKEN_IDX()]
+                if (end, start) not in self.dict and end != start: 
+                    self.dict[(start, end)] = val[consts.STEPS_TAKEN_IDX()]
+                    #print(str(start_point) + ":" + str(end_point) + ":" + str(val[consts.STEPS_TAKEN_IDX()]))
 
     def get_sd(self, curx, goalx, cury, goaly):
         start = (curx, cury)
         goal = (goalx, goaly)
         return self.dict[(start, goal)]
+
+class dict_mst:
+    def __init__(self):
+        self.data = 'empty'
+        self.x = -1
+        self.y = -1
+        self.neighbors = {}
+        self.traversed = False
+
+    def create_node(data, x, y):
+        node = dict_mst()
+        node.data = data
+        node.x = x
+        node.y = y
+        return node
+
+    def create_mst(self, sd_dict):
+        edges = sd_dict.keys()
+        nodes = {}
+        while len(edges) > 0:
+            min_edge = min(edges)
+            if min_edge[0] not in nodes and min_edge[1] not in nodes:
+                xA = min_edge[0][0]
+                yA = min_edge[0][1]
+                xB = min_edge[1][0]
+                yB = min_edge[1][1]
+                nodes[min_edge[0]] = dict_mst.create_node('.', xA, yA)
+                nodes[min_edge[1]] = dict_mst.create_node('.', xB, yB)
+                nodes[min_edge[0]].neighbors[min_edge[1]] = nodes[min_edge[1]] # Create the edge representation 
+                nodes[min_edge[1]].neighbors[min_edge[0]] = nodes[min_edge[0]] # Create the reverse edge representation
+            elif min_edge[0] not in nodes or min_edge[1] not in nodes:
+                if min_edge[0] not in nodes and min_edge[1] in nodes: 
+                    node_unrep = min_edge[0]
+                elif min_edge[1] not in nodes and min_edge[0] in nodes:
+                    node_unrep = min_edge[1]
+                x = node_unrep[0]                                              # Get the x value of the unrepresented node
+                y = node_unrep[1]                                              # Get the y value of the unrepresented node
+                nodes[node_unrep] = dict_mst.create_node('.', x, y)            # Create the unrepresented node
+                nodes[min_edge[0]].neighbors[min_edge[1]] = nodes[min_edge[1]] # Create the edge representation 
+                nodes[min_edge[1]].neighbors[min_edge[0]] = nodes[min_edge[0]] # Create the reverse edge representation
+            edges.remove(min_edge)
+        return nodes
+                
 

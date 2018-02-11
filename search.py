@@ -3,6 +3,7 @@ import queue
 import heapq
 import math
 import sd_dict
+import MazeTree
 
 ''' search.py
     Griffin A. Tucker
@@ -222,10 +223,10 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     # the manhattan distance
     if len(goals[0]) > 1: 
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
-        heuristic = sd_values.get_sd
-        while 1 == 1:
-            print(" d")
-    else: heuristic = manhattan_distance
+        mst_obj = sd_dict.dict_mst()
+        mst_dict = mst_obj.create_mst(sd_values.dict)
+        while 1: duh = 1
+        #traversal_list = a_star_dict(mst, (root.x,root.y), goals)
 
     # Declare a list and append the starting node.
     q = []     
@@ -287,6 +288,35 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     nodes_expanded *= -1
     return (nodes_expanded, 0) 
 
+def a_star_dict(mst, start_pt, goals):
+
+    # Check if we have valid inputs
+    if start_pt is None or sd_dict is None: return 0
+    
+    # Create the list to return; this is the list of xy-points to traverse in order
+    path = []
+    path.append(start_pt)
+
+    # Set the current node being evaluated to the start point.
+    # Add this node to the open set
+    cur = start_pt 
+    open_set = []     
+    open_set.append(cur)    
+
+    # g is the cost of going from one node to the next
+    # f is the total cost of getting from the start to the goal
+    # by passing a node 
+    g = {}
+    f = {}
+    g[(root.x, root.y)] = 0
+    #f[(root.x, root.y)] = 
+
+    #for goal_i in range(0, len(goals[0])):
+        
+
+    # Return the found path
+    return path
+
 def retrace(goal, maze_data):
     ''' retrace
         Griffin A. Tucker
@@ -330,7 +360,6 @@ def retrace(goal, maze_data):
             maze_data[cur.x][cur.y] = '.'
 
     # Return successful
-    steps_taken += 1
     return steps_taken
 
 def manhattan_distance(curx, goalx, cury, goaly):
