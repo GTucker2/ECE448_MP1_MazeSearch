@@ -57,7 +57,7 @@ class dict_mst:
         return node
 
     def create_mst(self, sd_dict):
-        edges = sd_dict.keys()
+        edges = list(sd_dict.keys())
         nodes = {}
         while len(edges) > 0:
             min_edge = min(edges)
