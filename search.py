@@ -261,7 +261,8 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
                 min_val = f[(node.x, node.y)]
                 cur = node
         q.remove(cur) 
-        if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data))
+        if (cur.x, cur.y) == (goals[0][0],goals[1][0]): 
+            return (nodes_expanded, retrace(cur, maze_data))
         nodes_expanded += 1
         neighbors.append(cur.up)
         neighbors.append(cur.down)
@@ -313,7 +314,7 @@ def retrace(goal, maze_data):
 
     # Traverse a back path from the goal node to the start
     # node. 
-    while cur.data is not 'P':
+    while cur.visited_from is not 'root':
         steps_taken += 1
         if cur.visited_from == "down":
             cur = cur.down

@@ -18,9 +18,10 @@ class sd_dict:
         for start_point in range(0, len(points)):
             start = points[start_point]
             for end_point in range(0, len(points)):
+                print(str(start_point) + ":" + str(end_point))
                 # every time, get a new maze 
                 maze_copy = []
-                maze_copy = createmaze.copy(maze_data)
+                maze_copy = createmaze.copy_maze(maze_data)
                 end = points[end_point]
                 endx = []
                 endy = []
