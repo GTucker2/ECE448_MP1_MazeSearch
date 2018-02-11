@@ -35,8 +35,8 @@ def loadMaze(filename, maze):
         maze.append(row)                            #
     
     
-    for i in range(0, mazeinfo.h):                                  #prints out the read in textfile
-        for j in range(0, mazeinfo.w):                              #basically proves that I read in the file correctly
+    for i in range(0, mazeinfo.h):
+        for j in range(0, mazeinfo.w):                              
             if maze[i][j] == 'P':                                   #gets the x,y coordinates of the starting point
                 mazeinfo.startpx = i
                 mazeinfo.startpy = j
