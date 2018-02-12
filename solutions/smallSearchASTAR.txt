@@ -11,6 +11,6 @@
 %c% %%%    % .%   %% %%.%%%%%%
 %          % f%        5     %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Nodes expanded: 0 
+Nodes expanded: 594 
 Steps taken: 244 
 

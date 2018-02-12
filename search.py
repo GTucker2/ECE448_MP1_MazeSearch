@@ -401,6 +401,7 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, call
     marker_i = len(mazeinfo.endpx) - 1
     callback_i = len(callback_list) - 1
     steps_taken = 0
+    nodes_expanded = 0 
     cur_xy = callback_list[callback_i][1]
     unvisited = list(mst_data.keys())
     
@@ -416,7 +417,7 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, call
             createmaze.reset_vals(maze_tree)
             ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
             steps_taken += ret[1]
-            #print(steps_taken)
+            nodes_expanded += ret[0]
             if cur_xy in unvisited:
                 maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
                 marker_i -= 1
@@ -424,7 +425,7 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, call
         callback_i -= 1
         cur_xy = callback_list[callback_i][1]
 
-    return (0, steps_taken)
+    return (nodes_expanded, steps_taken)
 
 def manhattan_distance(curx, goalx, cury, goaly):
     '''
