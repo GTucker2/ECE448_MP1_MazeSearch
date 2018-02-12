@@ -40,7 +40,7 @@ class sd_dict:
         start_pt = (curx, cury)
         relavent_weights = []
         for key in self.dict.keys():
-            if key[0] == start_pt:
+            if key[0] == start_pt or key[1] == start_pt:
                 relavent_weights.append(self.dict[key])
         return min(relavent_weights)
 
@@ -51,6 +51,7 @@ class dict_mst:
         self.y = -1
         self.neighbors = {}
         self.traversed = False
+        self.visited_from = (-1,-1)
 
     def create_node(data, x, y):
         node = dict_mst()
@@ -95,7 +96,10 @@ class dict_mst:
                 end = (neighbor.x, neighbor.y)
                 if ((start, end)) not in seen_edges and ((end, start)) not in seen_edges:
                     if neighbor.traversed is False:
-                        total_weight += sd_dict.dict[(start, end)]
+                        if (start, end) in sd_dict.dict.keys(): 
+                            total_weight += sd_dict.dict[(start, end)]
+                        else:
+                            total_weight += sd_dict.dict[(end, start)]
                     seen_edges.append((start,end))
                     seen_edges.append((end,start))
         return total_weight

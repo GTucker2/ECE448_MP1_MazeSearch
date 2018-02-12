@@ -225,7 +225,7 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         mst_obj = sd_dict.dict_mst()
         mst_dict = mst_obj.create_mst(sd_values.dict)
-        return a_star_mult(sd_values, mst_dict, (root.x, root.y))
+        return a_star_mult(maze_data, mazeinfo, maze_tree, sd_values, mst_dict, (root.x, root.y))
 
     # Declare a list and append the starting node.
     q = []     
@@ -287,7 +287,11 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
     nodes_expanded *= -1
     return (nodes_expanded, 0)
 
-def a_star_mult(sd_data, mst_data, start_xy):
+def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
+
+    # Create a q to search over
+    q = []
+    q.append(start_xy)
 
     # set the current traversed nodes xy and set it as traversed
     cur_xy = start_xy
@@ -299,16 +303,38 @@ def a_star_mult(sd_data, mst_data, start_xy):
     # by passing a node CHANGE FOR MULTIPLE NODES
     g = {}
     f = {}
-    g[(start_xy[0], start_xy[1])] = 0
-    f[(start_xy[0], start_xy[1])] = sd_data.get_min_sd(start_xy[0], start_xy[1]) + mst_obj.sum_weights(mst_data, sd_data)
+    g[start_xy] = 0
+    f[start_xy] = sd_data.get_min_sd(start_xy[0], start_xy[1]) + mst_obj.sum_weights(mst_data, sd_data)
 
-    while 1: duh = 1
-    '''unvisited = list(sd_data.keys())
-    while len(unvisited) > 0:
+    # Search for the optimal retrace_path
+    unvisited = list(mst_data.keys())
+
+    while len(q) > 0:
         min_val = None
-        neighbors = []
-        for goal in unvisited:
-            if min_val is None '''
+        for node_xy in q:
+            if min_val is None or f[node_xy] <= f[cur_xy]:
+                min_val = f[node_xy]
+                cur_xy = node_xy
+        unvisited.remove(cur_xy)
+        q.remove(cur_xy) 
+        if len(unvisited) == 0: 
+            return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy)
+        for neighbor_xy in mst_data[cur_xy].neighbors.keys():
+            if neighbor_xy is not None:
+                if mst_data[cur_xy].neighbors[neighbor_xy].traversed is False:
+                    q.append(neighbor_xy)
+                    if mst_data[cur_xy].neighbors[neighbor_xy].visited_from == (-1,-1):
+                        mst_data[cur_xy].neighbors[neighbor_xy].visited_from = cur_xy
+                if (cur_xy, neighbor_xy) in sd_data.dict:
+                    g_tentative = g[cur_xy] + sd_data.dict[cur_xy, neighbor_xy]
+                else:
+                    g_tentative = g[cur_xy] + sd_data.dict[neighbor_xy, cur_xy]
+                if neighbor_xy not in g or g_tentative < g[neighbor_xy]:
+                    g[neighbor_xy] = g_tentative
+                    f[neighbor_xy] = g_tentative + sd_data.get_min_sd(neighbor_xy[0], neighbor_xy[1]) + mst_obj.sum_weights(mst_data, sd_data)
+        mst_data[cur_xy].traversed = True 
+
+    return 0
 
 def retrace(goal, maze_data):
     ''' retrace
@@ -354,6 +380,34 @@ def retrace(goal, maze_data):
 
     # Return successful
     return steps_taken
+
+def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy):
+    
+    # declare useful constants
+    root_xy = (-1, -1)
+    markers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    marker_i = len(mazeinfo.endpx) - 1
+
+    steps_taken = 0
+    cur_xy = start_xy
+    
+    while mst_data[cur_xy].visited_from is not root_xy:
+        print(str(marker_i))
+        maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
+        root = maze_tree[cur_xy[0]][cur_xy[1]]
+        goal_x = []
+        goal_y = []
+        goal_x.append(mst_data[cur_xy].visited_from[0])
+        goal_y.append(mst_data[cur_xy].visited_from[1])
+        goal_xy = (goal_x, goal_y)
+        ret = 0 #a_star(maze_data, mazeinfo, maze_tree, root, goal_xy)
+        steps_taken += 0 #ret[1]
+        cur_xy = (goal_x[0], goal_y[0])
+        marker_i -= 1
+        print(str(cur_xy))
+        if cur_xy == root_xy: break 
+
+    return (0, steps_taken)
 
 def manhattan_distance(curx, goalx, cury, goaly):
     '''
