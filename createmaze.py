@@ -87,6 +87,12 @@ def print_maze(maze, NodesExp_StepsTaken, file_name):
     fo.close()
     return 1
 
+def reset_vals(maze):
+    for x in range(0, len(maze)):
+        for y in range(0, len(maze[x])):
+            maze[x][y].visited_from = 'not'
+            maze[x][y].traversed = False
+
 def copy_maze(maze):
     '''
         Kaleb Henderson

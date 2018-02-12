@@ -51,6 +51,7 @@ class dict_mst:
         self.y = -1
         self.neighbors = {}
         self.traversed = False
+        self.eaten = False
         self.visited_from = (-1,-1)
 
     def create_node(data, x, y):

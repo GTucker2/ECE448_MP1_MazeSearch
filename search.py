@@ -284,6 +284,8 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals, do_print):
                     f[(neighbor.x, neighbor.y)] = g_tentative + manhattan_distance(neighbor.x, goals[0][0], neighbor.y, goals[1][0])
         cur.traversed = True
         
+    print("here")
+
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
     return (nodes_expanded, 0)
@@ -388,35 +390,36 @@ def retrace(goal, maze_data, do_print):
             return 0
         if cur.data is not '.' and cur.data is not 'P' and do_print is True:
             maze_data[cur.x][cur.y] = '.'
-
     # Return successful
     return steps_taken
 
-def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy):
+def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, callback_list):
     
     # declare useful constants
     root_xy = (-1, -1)
     markers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
     marker_i = len(mazeinfo.endpx) - 1
-
+    callback_i = len(callback_list) - 1
     steps_taken = 0
-    cur_xy = start_xy
+    cur_xy = callback_list[callback_i][1]
     
-    while mst_data[cur_xy].visited_from is not root_xy:
-        #print(str(marker_i))
-        maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
-        root = maze_tree[cur_xy[0]][cur_xy[1]]
-        goal_x = []
-        goal_y = []
-        goal_x.append(mst_data[cur_xy].visited_from[0])
-        goal_y.append(mst_data[cur_xy].visited_from[1])
-        goal_xy = (goal_x, goal_y)
-        ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
-        steps_taken += ret[1]
-        cur_xy = (goal_x[0], goal_y[0])
-        marker_i -= 1
-        #print(str(cur_xy))
-        if cur_xy == root_xy: break 
+    while callback_i >= 0:
+        if callback_list[callback_i][0] != callback_list[callback_i][1]:
+            #print(str(callback_list[callback_i][0]) + " : " + str(callback_list[callback_i][1]))
+            root = maze_tree[cur_xy[0]][cur_xy[1]]
+            goal_x = []
+            goal_y = []
+            goal_x.append(callback_list[callback_i][0][0])
+            goal_y.append(callback_list[callback_i][0][1])
+            goal_xy = (goal_x, goal_y)
+            createmaze.reset_vals(maze_tree)
+            ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
+            steps_taken += ret[1]
+            #print(steps_taken)
+            maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
+            marker_i -= 1
+        callback_i -= 1
+        cur_xy = callback_list[callback_i][1]
 
     return (0, steps_taken)
 
