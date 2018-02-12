@@ -31,7 +31,9 @@ class sd_dict:
                 endy.append(end[1])
                 root = maze_tree_copy[start[0]][start[1]]
                 goal = (endx, endy)
-                val = search.a_star(maze_copy, mazeinfo, maze_tree_copy, root, goal)
+                val = search.a_star(maze_copy, mazeinfo, maze_tree_copy, root, goal, False)
+                outputname = input("Please enter the desired outputfile name (.txt): ")
+                createmaze.print_maze(maze_data, val, outputname)
                 if (end, start) not in self.dict and end != start: 
                     self.dict[(start, end)] = val[consts.STEPS_TAKEN_IDX()]
                     #print(str(start_point) + ":" + str(end_point) + ":" + str(val[consts.STEPS_TAKEN_IDX()]))

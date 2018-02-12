@@ -4,6 +4,7 @@ import heapq
 import math
 import sd_dict
 import MazeTree
+import createmaze
 
 ''' search.py
     Griffin A. Tucker
@@ -50,7 +51,7 @@ def bredth_first(maze_data, root, goal):
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
-                return (nodes_expanded, retrace(cur, maze_data))
+                return (nodes_expanded, retrace(cur, maze_data, True))
             else:    
                 nodes_expanded += 1       
                 if cur.up is not None and cur.up.data is not '%': 
@@ -110,7 +111,7 @@ def depth_first(maze_data, root, goal):
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
             if cur.data is goal: 
-                return (nodes_expanded, retrace(cur, maze_data))
+                return (nodes_expanded, retrace(cur, maze_data, True))
             else:       
                 nodes_expanded += 1          
                 if cur.up is not None and cur.up.data is not '%': 
@@ -172,7 +173,7 @@ def greedy_first(maze_data, root, goals):
         cur = q.dequeue()
         if cur.traversed is False:
             if cur.data is 'P': cur.traversed = True
-            if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data))
+            if cur.data is '.': return (nodes_expanded, retrace(cur, maze_data, True))
             else:
                 nodes_expanded += 1
                 if cur.up is not None and cur.up.data is not '%':
@@ -199,7 +200,7 @@ def greedy_first(maze_data, root, goals):
     nodes_expanded *= -1
     return (nodes_expanded, 0)
 
-def a_star(maze_data, mazeinfo, maze_tree, root, goals):
+def a_star(maze_data, mazeinfo, maze_tree, root, goals, do_print):
     ''' a_star
         Griffin A. Tucker
         FINAL DATE
@@ -225,6 +226,10 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         mst_obj = sd_dict.dict_mst()
         mst_dict = mst_obj.create_mst(sd_values.dict)
+
+        outputname = input("Please enter the desired outputfile name (.txt): ")
+        createmaze.print_maze(maze_data, (0,0), outputname)
+
         return a_star_mult(maze_data, mazeinfo, maze_tree, sd_values, mst_dict, (root.x, root.y))
 
     # Declare a list and append the starting node.
@@ -262,7 +267,7 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
                 cur = node
         q.remove(cur) 
         if (cur.x, cur.y) == (goals[0][0],goals[1][0]): 
-            return (nodes_expanded, retrace(cur, maze_data))
+            return (nodes_expanded, retrace(cur, maze_data, do_print))
         nodes_expanded += 1
         neighbors.append(cur.up)
         neighbors.append(cur.down)
@@ -336,7 +341,7 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
 
     return 0
 
-def retrace(goal, maze_data):
+def retrace(goal, maze_data, do_print):
     ''' retrace
         Griffin A. Tucker
         February 3 2018
@@ -375,7 +380,7 @@ def retrace(goal, maze_data):
             cur = cur.left 
         elif cur.visited_from == "not":
             return 0
-        if cur.data is not '.' and cur.data is not 'P':
+        if cur.data is not '.' and cur.data is not 'P' and do_print is True:
             maze_data[cur.x][cur.y] = '.'
 
     # Return successful
@@ -400,8 +405,8 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy):
         goal_x.append(mst_data[cur_xy].visited_from[0])
         goal_y.append(mst_data[cur_xy].visited_from[1])
         goal_xy = (goal_x, goal_y)
-        ret = 0 #a_star(maze_data, mazeinfo, maze_tree, root, goal_xy)
-        steps_taken += 0 #ret[1]
+        ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
+        steps_taken += ret[1]
         cur_xy = (goal_x[0], goal_y[0])
         marker_i -= 1
         print(str(cur_xy))
