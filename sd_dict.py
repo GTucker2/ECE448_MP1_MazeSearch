@@ -3,6 +3,16 @@ import search
 import consts
 import MazeTree
 
+''' search.py
+    Griffin A. Tucker
+    February 12 2018
+    This module allows the user to perform a set 
+        of searches on a given graph. The
+        implemented searches include the following:
+        bredth-first search, depth-first search,
+        greedy-first search, and A* search. 
+'''
+
 class sd_dict:
     def __init__(self, maze_data, maze_tree, mazeinfo):
         # initialize a dictionary for storing all step distances between

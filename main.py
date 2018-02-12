@@ -27,5 +27,6 @@ elif searchtype == "GREEDY": NodesExp_StepsTaken = search.greedy_first(ascii_maz
 elif searchtype == "ASTAR" and len(mazeinfo.endpx) <= 1: NodesExp_StepsTaken = search.a_star(ascii_maze, mazeinfo, maze_tree, maze_tree[mazeinfo.startpx][mazeinfo.startpy], (mazeinfo.endpx, mazeinfo.endpy), True)
 elif searchtype == "ASTAR" and len(mazeinfo.endpx) > 1: NodesExp_StepsTaken = search.a_star(ascii_maze, mazeinfo, maze_tree, maze_tree[mazeinfo.startpx][mazeinfo.startpy], (mazeinfo.endpx, mazeinfo.endpy), False)
 
+# Output the maze solution to a specified location
 outputname = input("Please enter the desired outputfile name (.txt): ")
 createmaze.print_maze(ascii_maze, NodesExp_StepsTaken, outputname)

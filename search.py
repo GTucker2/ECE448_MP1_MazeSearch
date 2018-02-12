@@ -8,14 +8,13 @@ import createmaze
 
 ''' search.py
     Griffin A. Tucker
-    FINAL DATE
+    February 12 2018
     This module allows the user to perform a set 
         of searches on a given graph. The
         implemented searches include the following:
         bredth-first search, depth-first search,
         greedy-first search, and A* search. 
 '''
-#YOU SPELLED IT WRONG BOI
 def bredth_first(maze_data, root, goal):
     ''' bredth_first
         Griffin A. Tucker
@@ -26,7 +25,8 @@ def bredth_first(maze_data, root, goal):
             root  : a tree to perform the search on
             goal  : a goal character value to search for
         Returns:
-            The total number of expanded nodes. 
+            The total number of expanded nodes and the
+            step cost. of the traversal.  
                 If > 0: the goal was found
                 If <= 0: the goal was not found
     '''
@@ -87,8 +87,10 @@ def depth_first(maze_data, root, goal):
             root  : a tree to perform the search on
             goal  : a goal character value to search for
         Returns:
-            1 : if the goal is found
-            0 : if the goal is not found
+            The total number of expanded nodes and the
+            step cost. of the traversal.  
+                If > 0: the goal was found
+                If <= 0: the goal was not found
     '''
     # Check if the tree is valid. If it is not, return 0.
     if root is None: return 0
@@ -145,10 +147,12 @@ def greedy_first(maze_data, root, goals):
         Accepts:
             maze_data : a 2d array of characters 
             root  : a tree to perform the search on
-            goals  :
+            goals : a goal to be found by the search
         Returns:
-            The total number of nodes expanded during the seach.
-            This value is negative or 0 if the goal was not found.
+            The total number of expanded nodes and the
+            step cost. of the traversal.  
+                If > 0: the goal was found
+                If <= 0: the goal was not found
     '''
     # Check if the tree is valid. If it is not, return 0
     if root is None: return 0
@@ -203,30 +207,38 @@ def greedy_first(maze_data, root, goals):
 def a_star(maze_data, mazeinfo, maze_tree, root, goals, do_print):
     ''' a_star
         Griffin A. Tucker
-        FINAL DATE
+        February 11 2018
         This function performs an A* search on a given
              graph.
         Accepts:
             maze_data : a 2d array of characters 
+            mazeinfo : an mInfo object containing maze info
+            maze_tree : a 2D array of MazeTree nodes
             root  : a tree to perform the search on
-            goal  : a goal character value to search for
+            goals  : a goal or set of goal characters to 
+                search for
+            do_print : whether or not the retrace should 
+                modify maze_data
         Returns:
-            1 : if the goal is found
-            0 : if the goal is not found
-        This function returns 0 for now.
+            The total number of expanded nodes and the
+            step cost. of the traversal.  
+                If > 0: the goal was found
+                If <= 0: the goal was not found
     '''
     # Check if the tree is valid. If it is not, return 0.
     if root is None: return 0
     else: root.visited_from = "root"
 
     # If we have more than one goal, generate actual distances
-    # between points as the heuristic model. Otherwise, use
-    # the manhattan distance
+    # between points as a graph. Then, obtain the MST from 
+    # this graph to be used in heuristic calculate. Then, run
+    # a_star on that MST. Otherwise, use the manhattan distance. 
     if len(goals[0]) > 1: 
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         mst_obj = sd_dict.dict_mst()
         mst_dict = mst_obj.create_mst(sd_values.dict)
-        return a_star_mult(maze_data, mazeinfo, maze_tree, sd_values, mst_dict, (root.x, root.y))
+        return a_star_mult(maze_data, mazeinfo, maze_tree,
+                           sd_values, mst_dict, (root.x, root.y))
 
     # Declare a list and append the starting node.
     q = []     
@@ -244,16 +256,19 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals, do_print):
 
     # g is the cost of going from one node to the next
     # f is the total cost of getting from the start to the goal
-    # by passing a node CHANGE FOR MULTIPLE NODES
+    # by passing a node.
     g = {}
     f = {}
     g[(root.x, root.y)] = 0
     f[(root.x, root.y)] = manhattan_distance(root.x, goals[0][0], root.y, goals[1][0])
 
-    # While the q is not empty, get the next node on the queue
-    # and check for the goal. If at the goal, copy the successful
-    # path to the array of mazedata and then return 1. Else,
-    # expand the node to the queue. 
+    # While the length of the list is larger than 0, search. Each iteration,
+    # get the minimum value in q and expand it if it's not the goal. For 
+    # each neighbor of the node, append it to the list if it has not been
+    # seen and set its visited_from value to the cardinal direction of
+    # the current node with respect to the neighbor. Then, calculate the
+    # neighbor's f and g values. End the iteration by marking the current
+    # node as traversed. 
     while len(q) > 0:
         min_val = None
         neighbors = []
@@ -279,31 +294,57 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals, do_print):
                         elif neighbor.left == cur: neighbor.visited_from = "left"
                         elif neighbor.right == cur: neighbor.visited_from = "right"
                 g_tentative = g[(cur.x, cur.y)] + 1
-                if(neighbor.x, neighbor.y) not in g or g_tentative < g[(neighbor.x, neighbor.y)]:
-                    g[(neighbor.x, neighbor.y)] = g_tentative
-                    f[(neighbor.x, neighbor.y)] = g_tentative + manhattan_distance(neighbor.x, goals[0][0], neighbor.y, goals[1][0])
+                neighbor_xy = (neighbor.x, neighbor.y)
+                if neighbor_xy not in g or g_tentative < g[neighbor_xy]:
+                    g[neighbor_xy] = g_tentative
+                    f[neighbor_xy] = g_tentative
+                    f[neighbor_xy] += manhattan_distance(neighbor.x, goals[0][0], 
+                                                         neighbor.y, goals[1][0])
         cur.traversed = True
-        
-    print("here")
 
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
     return (nodes_expanded, 0)
 
 def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
-
+    ''' a_star_mult
+        Griffin A. Tucker
+        February 12 2018
+        This function performs an A* search on a given
+             graph with multiple end goals.
+        Accepts:
+            maze_data : a 2d array of characters 
+            mazeinfo : an mInfo object containing maze info
+            maze_tree : a 2D array of MazeTree nodes
+            sd_data : a dict of all step costs between
+                goal points
+            mst_data : the MST of the given maze
+            start_xy : the (x,y) coordinates of the starting 
+                positiong in the MST
+        Returns:
+            The total number of expanded nodes and the
+            step cost. of the traversal.  
+                If > 0: the goal was found
+                If <= 0: the goal was not found
+    '''
     # Create a q to search over
     q = []
     q.append(start_xy)
 
-    # set the current traversed nodes xy and set it as traversed
+    # set the current node xy to be evaluated as start_xy 
+    # and set its node as traversed
     cur_xy = start_xy
     mst_data[start_xy].traversed = True 
+
+    # Create a dict_mst object so we may call its functions
     mst_obj = sd_dict.dict_mst()
 
     # g is the cost of going from one node to the next
     # f is the total cost of getting from the start to the goal
-    # by passing a node CHANGE FOR MULTIPLE NODES
+    # by passing a node. It is purely heuristic; h(n) is the 
+    # sum of the shortest path to another goal and the estimated
+    # travel cost of all the remaining untraversed edges in the
+    # MST
     g = {}
     f = {}
     g[start_xy] = 0
@@ -316,6 +357,12 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
     last_node = start_xy
     callback_list = []
     
+    # For every node in the list, expand the node with
+    # the minimum f value if the goal condition is not met.
+    # Every step, remove a node from the unvisited list
+    # if it is a new node being visited. For every 
+    # neighbor to the expanding node, calculate g and f 
+    # set its visited_from variable as the xy val of cur.
     min_val = None
     while len(q) > 0:
         if len(q) == 1: 
@@ -331,7 +378,9 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
         if cur_xy in unvisited: unvisited.remove(cur_xy)
         q.remove(cur_xy) 
         if len(unvisited) == 0: 
-            return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy, callback_list)
+            return a_star_mult_retrace(maze_data, mazeinfo, 
+                                       maze_tree, mst_data, 
+                                       cur_xy, callback_list)
         for neighbor_xy in mst_data[cur_xy].neighbors.keys():
             if neighbor_xy is not None:
                 if mst_data[cur_xy].neighbors[neighbor_xy].traversed is False:
@@ -344,9 +393,12 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
                     g_tentative = g[cur_xy] + sd_data.dict[neighbor_xy, cur_xy]
                 if neighbor_xy not in g or g_tentative < g[neighbor_xy]:
                     g[neighbor_xy] = g_tentative
-                    f[neighbor_xy] = g_tentative + sd_data.get_min_sd(neighbor_xy[0], neighbor_xy[1]) + mst_obj.sum_weights(mst_data, sd_data)
+                    f[neighbor_xy] = g_tentative 
+                    f[neighbor_xy] += sd_data.get_min_sd(neighbor_xy[0], neighbor_xy[1]) 
+                    f[neighbor_xy] += mst_obj.sum_weights(mst_data, sd_data)
         mst_data[cur_xy].traversed = True 
 
+    # Retrace and return the value
     return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy)
 
 def retrace(goal, maze_data, do_print):
@@ -359,9 +411,13 @@ def retrace(goal, maze_data, do_print):
         Accepts:
             maze_data : a 2d array of characters 
             goal  : a goal node to begin the retrace on
+            do_print : if maze_data should be altered by 
+                the retrace.
         Returns:
-            1 : if we reach the start 
-            0 : if data is invalid
+            Returns:
+            The total step cost of the traversal.  
+                If > 0: the goal was found
+                If <= 0: the goal was not found
     '''
     # Check that the supplied data is valid
     if goal is None or maze_data is None:
@@ -394,20 +450,56 @@ def retrace(goal, maze_data, do_print):
     return steps_taken
 
 def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, callback_list):
-    
-    # declare useful constants
-    root_xy = (-1, -1)
-    markers = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+    ''' a_star_mult_retrace   
+        Griffin A. Tucker
+        February 11 2018
+        This function retraces a path generated by the A*
+            algorithm on a maze with multiple goals.
+        Accepts:
+            maze_data : a 2d array of characters 
+            mazeinfo : an mInfo object containing maze info
+            maze_tree : a 2D array of MazeTree nodes
+            mst_data : the MST of the maze
+            start_xy : the position to begin the retrace
+            callback_list : the nodes to traverse in the retrace
+        Returns:
+            The total number of expanded nodes and the
+            step cost. of the traversal.  
+                If > 0: the goal was found
+                If <= 0: the goal was not found 
+    '''
+    # A set of markers to mark endpoints in order upon 
+    # reaching them.
+    markers = ['1', '2', '3', '4', '5', '6', '7', '8', '9',
+               'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+               'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 
+               's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A']
+
+    # Iterators to pick markers and to access proper 
+    # members of the callback.
     marker_i = len(mazeinfo.endpx) - 1
     callback_i = len(callback_list) - 1
+
+    # Variables for recording the number of steps taken
+    # in the traversal and the total of nodes expanded
+    # in the traversal.
     steps_taken = 0
     nodes_expanded = 0 
+
+    # Set the current point as the last member of the 
+    # callback and generate a list of all unvisited nodes.
     cur_xy = callback_list[callback_i][1]
     unvisited = list(mst_data.keys())
     
+    # While we are not at the end of the callback and as long
+    # as the callback variable isn't redundant (start and finish
+    # of an edge aren't the same), perform an astar traversal
+    # between the root and goal of the callback variable to 
+    # generate the proper path. If we perform a traversal on
+    # a goal which has already been generated, do not set a new
+    # marker. 
     while callback_i >= 0:
         if callback_list[callback_i][0] != callback_list[callback_i][1]:
-            #print(str(callback_list[callback_i][0]) + " : " + str(callback_list[callback_i][1]))
             root = maze_tree[cur_xy[0]][cur_xy[1]]
             goal_x = []
             goal_y = []
@@ -425,13 +517,15 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, call
         callback_i -= 1
         cur_xy = callback_list[callback_i][1]
 
+    # Return the values generated by the traversal 
     return (nodes_expanded, steps_taken)
 
 def manhattan_distance(curx, goalx, cury, goaly):
-    '''
-       Function finds the manhattan distance between the point passed and the 
-       end point of the maze.
-       Returns that value
+    ''' manhattan_distance
+        Kaleb Henderson 
+        Function finds the manhattan distance between the point passed and the 
+        end point of the maze.
+        Returns that value
     '''
     return abs(goalx - curx) + abs(goaly - cury)
 
@@ -454,9 +548,6 @@ def h_enqueue(queue, Q, A, h):
     if queue is None or Q is None or A is None or h is None:
         return queue
 
-    # for i in range(0, len(Q)):
-    #    print(str(Q[i].x))
-
     # Create and fill a list of heuristic values 
     # Copy the states (we do not want to modify the original set)
     h_vals = []
@@ -477,12 +568,3 @@ def h_enqueue(queue, Q, A, h):
 
     # Return the final queue
     return queue
-
-def astar_heuristic(cur, goal):
-    '''
-        Finds the Euclidian distance between two points
-        Good heuristic for a single goal state
-        but not sure how to translate to multiple
-    '''
-                          
-    return math.sqrt((abs(goal.x - cur.x)**2) + (abs(goal.y - cur.y)**2))
