@@ -3,17 +3,20 @@ import search
 import consts
 import MazeTree
 
-''' search.py
+''' sd_dict.py
     Griffin A. Tucker
-    February 12 2018
-    This module allows the user to perform a set 
-        of searches on a given graph. The
-        implemented searches include the following:
-        bredth-first search, depth-first search,
-        greedy-first search, and A* search. 
+    February 11 2018
+    This module defines two structures: sd_dict and dict_mst.
 '''
-
 class sd_dict:
+    ''' sd_dict  
+        Griffin A. Tucker
+        February 11 2018
+        This class creates an object which holds a dictionary
+        of path costs between start and end points in a graph. 
+        This serves as a wrapper class for a typical 
+        dictionary, filling the dict on instantiation.
+    '''
     def __init__(self, maze_data, maze_tree, mazeinfo):
         # initialize a dictionary for storing all step distances between
         # significant points in the maze (all goals and the start)
@@ -29,7 +32,6 @@ class sd_dict:
         for start_point in range(0, len(points)):
             start = points[start_point]
             for end_point in range(0, len(points)):
-                # every time, get a new maze 
                 maze_copy = []
                 maze_copy = createmaze.copy_maze(maze_data)
                 root_r = MazeTree.MazeTree()
@@ -44,9 +46,20 @@ class sd_dict:
                 val = search.a_star(maze_copy, mazeinfo, maze_tree_copy, root, goal, False)
                 if (end, start) not in self.dict and end != start: 
                     self.dict[(start, end)] = val[consts.STEPS_TAKEN_IDX()]
-                    #print(str(start_point) + ":" + str(end_point) + ":" + str(val[consts.STEPS_TAKEN_IDX()]))
 
     def get_min_sd(self, curx, cury):
+        ''' get_min_sd   
+            Griffin A. Tucker
+            February 11 2018
+            Return the minimum value for some start point 
+                (curx, cury) in the dictionary
+            Accepts:
+                curx : the x coordinate of the start point
+                cury : the y coordinate of the start point
+            Returns:
+                The minimum step cost with respect to 
+                    (curx, cury) as a start point.
+        '''
         start_pt = (curx, cury)
         relavent_weights = []
         for key in self.dict.keys():
@@ -55,6 +68,12 @@ class sd_dict:
         return min(relavent_weights)
 
 class dict_mst:
+    ''' dict_mst
+        Griffin A. Tucker
+        February 11 2018
+        This class creates an MST for some given dict
+        of edge weight values (sd_dict)
+    '''
     def __init__(self):
         self.data = 'empty'
         self.x = -1
@@ -65,6 +84,16 @@ class dict_mst:
         self.visited_from = (-1,-1)
 
     def create_node(data, x, y):
+        ''' create_node 
+            Griffin A. Tucker
+            February 11 2018
+            Creates a node for the MST
+            Accepts:
+                x : the x position of the node in the maze
+                y : the y position of the node in the maze
+            Returns:
+                The created node
+        '''
         node = dict_mst()
         node.data = data
         node.x = x
@@ -72,6 +101,17 @@ class dict_mst:
         return node
 
     def create_mst(self, sd_dict):
+        ''' get_min_sd   
+            Griffin A. Tucker
+            February 11 2018
+            Generates an MST for a given sd_dict
+            Accepts:
+                sd_dict : a dictionary of step cost
+                    values for (x,y) keys
+            Returns:
+                The MST as a dict which allows 
+                referencing of any node
+        '''
         edges = list(sd_dict.keys())
         weights = list(sd_dict.values())
         node_sets = {}
@@ -117,6 +157,18 @@ class dict_mst:
         return nodes
 
     def sum_weights(self, mst_dict, sd_dict):
+        ''' sum_weights
+            Griffin A. Tucker
+            February 11 2018
+            Return the sum of all the untraversed edges in 
+                the MST.
+            Accepts:
+                mst_dict : an MST as a dictionary
+                sd_dict : a dictionary of step cost
+                    values for (x,y) keys
+            Returns:
+                The sum of the untraversed edges in the MST
+        '''
         seen_edges = []
         total_weight = 0
         for key in mst_dict.keys():
