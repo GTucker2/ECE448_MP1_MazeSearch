@@ -327,11 +327,13 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
         if len(unvisited) == 0: 
             return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy)
         for neighbor_xy in mst_data[cur_xy].neighbors.keys():
+            print("at : " + str(cur_xy))
             if neighbor_xy is not None:
                 if mst_data[cur_xy].neighbors[neighbor_xy].traversed is False:
                     q.append(neighbor_xy)
                     if mst_data[cur_xy].neighbors[neighbor_xy].visited_from == (-1,-1):
                         mst_data[cur_xy].neighbors[neighbor_xy].visited_from = cur_xy
+                        print(cur_xy)
                 if (cur_xy, neighbor_xy) in sd_data.dict:
                     g_tentative = g[cur_xy] + sd_data.dict[cur_xy, neighbor_xy]
                 else:
@@ -407,8 +409,8 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy):
         goal_x.append(mst_data[cur_xy].visited_from[0])
         goal_y.append(mst_data[cur_xy].visited_from[1])
         goal_xy = (goal_x, goal_y)
-        #ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
-        steps_taken = 0#+= ret[1]
+        ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
+        steps_taken += ret[1]
         cur_xy = (goal_x[0], goal_y[0])
         marker_i -= 1
         #print(str(cur_xy))

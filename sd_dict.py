@@ -62,9 +62,10 @@ class dict_mst:
 
     def create_mst(self, sd_dict):
         edges = list(sd_dict.keys())
+        weights = list(sd_dict.values())
         nodes = {}
         while len(edges) > 0:
-            min_edge = min(edges)
+            min_edge = edges[weights.index(min(weights))]
             if min_edge[0] not in nodes and min_edge[1] not in nodes:
                 xA = min_edge[0][0]
                 yA = min_edge[0][1]
@@ -85,6 +86,7 @@ class dict_mst:
                 nodes[min_edge[0]].neighbors[min_edge[1]] = nodes[min_edge[1]] # Create the edge representation 
                 nodes[min_edge[1]].neighbors[min_edge[0]] = nodes[min_edge[0]] # Create the reverse edge representation
             edges.remove(min_edge)
+            weights.remove(min(weights))
         return nodes
 
     def sum_weights(self, mst_dict, sd_dict):
