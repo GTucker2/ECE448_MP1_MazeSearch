@@ -402,6 +402,7 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, call
     callback_i = len(callback_list) - 1
     steps_taken = 0
     cur_xy = callback_list[callback_i][1]
+    unvisited = list(mst_data.keys())
     
     while callback_i >= 0:
         if callback_list[callback_i][0] != callback_list[callback_i][1]:
@@ -416,8 +417,10 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy, call
             ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
             steps_taken += ret[1]
             #print(steps_taken)
-            maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
-            marker_i -= 1
+            if cur_xy in unvisited:
+                maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
+                marker_i -= 1
+                unvisited.remove(cur_xy)
         callback_i -= 1
         cur_xy = callback_list[callback_i][1]
 
