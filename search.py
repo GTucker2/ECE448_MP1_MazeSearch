@@ -310,6 +310,10 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
     # Search for the optimal retrace_path
     unvisited = list(mst_data.keys())
     
+    # Keep track of steps taken
+    last_node = start_xy
+    callback_list = []
+    
     min_val = None
     while len(q) > 0:
         if len(q) == 1: 
@@ -320,20 +324,18 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
                 if min_val is None or f[node_xy] <= f[cur_xy]:
                     min_val = f[node_xy]
                     cur_xy = node_xy
-        print("unvisited: " + str(unvisited))
-        print("q:" + str(q))
-        print("cur: " + str(cur_xy))
-        unvisited.remove(cur_xy)
+        callback_list.append((last_node, cur_xy))
+        last_node = cur_xy
+        if cur_xy in unvisited: unvisited.remove(cur_xy)
         q.remove(cur_xy) 
         if len(unvisited) == 0: 
-            return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy)
+            return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy, callback_list)
         for neighbor_xy in mst_data[cur_xy].neighbors.keys():
             if neighbor_xy is not None:
                 if mst_data[cur_xy].neighbors[neighbor_xy].traversed is False:
                     q.append(neighbor_xy)
                     if mst_data[cur_xy].neighbors[neighbor_xy].visited_from == (-1,-1):
                         mst_data[cur_xy].neighbors[neighbor_xy].visited_from = cur_xy
-                        print(cur_xy)
                 if (cur_xy, neighbor_xy) in sd_data.dict:
                     g_tentative = g[cur_xy] + sd_data.dict[cur_xy, neighbor_xy]
                 else:
