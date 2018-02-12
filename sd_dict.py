@@ -40,7 +40,7 @@ class sd_dict:
         start_pt = (curx, cury)
         relavent_weights = []
         for key in self.dict.keys():
-            if key[0] = start_pt:
+            if key[0] == start_pt:
                 relavent_weights.append(self.dict[key])
         return min(relavent_weights)
 
@@ -86,16 +86,16 @@ class dict_mst:
             edges.remove(min_edge)
         return nodes
 
-    def sum_weights(mst_dict, sd_dict):
+    def sum_weights(self, mst_dict, sd_dict):
         seen_edges = []
         total_weight = 0
         for key in mst_dict.keys():
             start = (key[0],key[1]) 
-            for neighbor in mst_dict[key].neighbors
+            for neighbor in mst_dict[key].neighbors.values():
                 end = (neighbor.x, neighbor.y)
                 if ((start, end)) not in seen_edges and ((end, start)) not in seen_edges:
                     if neighbor.traversed is False:
-                        total_weight += sd_dict[(start, end)]
+                        total_weight += sd_dict.dict[(start, end)]
                     seen_edges.append((start,end))
                     seen_edges.append((end,start))
         return total_weight

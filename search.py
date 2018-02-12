@@ -225,7 +225,7 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         mst_obj = sd_dict.dict_mst()
         mst_dict = mst_obj.create_mst(sd_values.dict)
-        return a_star_mult()
+        return a_star_mult(sd_values, mst_dict, (root.x, root.y))
 
     # Declare a list and append the starting node.
     q = []     
@@ -285,7 +285,7 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals):
         
     # Return the negative number of expanded nodes since no goal found
     nodes_expanded *= -1
-    return (nodes_expanded, 0) or f[(node.x, node.y)] <= f[(cur.x, cur.y)]:
+    return (nodes_expanded, 0)
 
 def a_star_mult(sd_data, mst_data, start_xy):
 
@@ -299,9 +299,10 @@ def a_star_mult(sd_data, mst_data, start_xy):
     # by passing a node CHANGE FOR MULTIPLE NODES
     g = {}
     f = {}
-    g[(root.x, root.y)] = 0
-    f[(root.x, root.y)] = sd_dict.get_min_sd(root.x, root.y) + mst_obj.sum_weights(mst_data, sd_data)
+    g[(start_xy[0], start_xy[1])] = 0
+    f[(start_xy[0], start_xy[1])] = sd_data.get_min_sd(start_xy[0], start_xy[1]) + mst_obj.sum_weights(mst_data, sd_data)
 
+    while 1: duh = 1
     '''unvisited = list(sd_data.keys())
     while len(unvisited) > 0:
         min_val = None
