@@ -469,7 +469,7 @@ def h_enqueue(queue, Q, A, h):
     # Enqueue onto the queue each state q in Q (sorry) based on sorted
     # h values of the states.
     while len(Q_copy) > 0:
-        best_h = min(h_vals) 
+        best_h = max(h_vals) 
         best_q = Q_copy[h_vals.index(best_h)]
         queue.enqueue(best_q)
         Q_copy.remove(best_q)
