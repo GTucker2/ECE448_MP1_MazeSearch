@@ -226,10 +226,6 @@ def a_star(maze_data, mazeinfo, maze_tree, root, goals, do_print):
         sd_values = sd_dict.sd_dict(maze_data, maze_tree, mazeinfo) 
         mst_obj = sd_dict.dict_mst()
         mst_dict = mst_obj.create_mst(sd_values.dict)
-
-        outputname = input("Please enter the desired outputfile name (.txt): ")
-        createmaze.print_maze(maze_data, (0,0), outputname)
-
         return a_star_mult(maze_data, mazeinfo, maze_tree, sd_values, mst_dict, (root.x, root.y))
 
     # Declare a list and append the starting node.
@@ -313,13 +309,19 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
 
     # Search for the optimal retrace_path
     unvisited = list(mst_data.keys())
-
+    
+    min_val = None
     while len(q) > 0:
-        min_val = None
-        for node_xy in q:
-            if min_val is None or f[node_xy] <= f[cur_xy]:
-                min_val = f[node_xy]
-                cur_xy = node_xy
+        if len(q) == 1: 
+            cur_xy = q[0]
+        else:
+            cur_xy = q[0]
+            for node_xy in q:
+                if min_val is None or f[node_xy] <= f[cur_xy]:
+                    min_val = f[node_xy]
+                    cur_xy = node_xy
+        print(str(unvisited) + ":" + str(cur_xy))
+        print(q)
         unvisited.remove(cur_xy)
         q.remove(cur_xy) 
         if len(unvisited) == 0: 
@@ -397,7 +399,7 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy):
     cur_xy = start_xy
     
     while mst_data[cur_xy].visited_from is not root_xy:
-        print(str(marker_i))
+        #print(str(marker_i))
         maze_data[cur_xy[0]][cur_xy[1]] = markers[marker_i] 
         root = maze_tree[cur_xy[0]][cur_xy[1]]
         goal_x = []
@@ -405,11 +407,11 @@ def a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, start_xy):
         goal_x.append(mst_data[cur_xy].visited_from[0])
         goal_y.append(mst_data[cur_xy].visited_from[1])
         goal_xy = (goal_x, goal_y)
-        ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
-        steps_taken += ret[1]
+        #ret = a_star(maze_data, mazeinfo, maze_tree, root, goal_xy, True)
+        steps_taken = 0#+= ret[1]
         cur_xy = (goal_x[0], goal_y[0])
         marker_i -= 1
-        print(str(cur_xy))
+        #print(str(cur_xy))
         if cur_xy == root_xy: break 
 
     return (0, steps_taken)
