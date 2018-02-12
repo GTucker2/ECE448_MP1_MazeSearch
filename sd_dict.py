@@ -63,10 +63,13 @@ class dict_mst:
     def create_mst(self, sd_dict):
         edges = list(sd_dict.keys())
         weights = list(sd_dict.values())
+        node_sets = {}
         nodes = {}
         while len(edges) > 0:
             min_edge = edges[weights.index(min(weights))]
             if min_edge[0] not in nodes and min_edge[1] not in nodes:
+                node_sets[min_edge[0]] = [min_edge[0], min_edge[1]]
+                node_sets[min_edge[1]] = [min_edge[0], min_edge[1]]
                 xA = min_edge[0][0]
                 yA = min_edge[0][1]
                 xB = min_edge[1][0]
@@ -77,14 +80,27 @@ class dict_mst:
                 nodes[min_edge[1]].neighbors[min_edge[0]] = nodes[min_edge[0]] # Create the reverse edge representation
             elif min_edge[0] not in nodes or min_edge[1] not in nodes:
                 if min_edge[0] not in nodes and min_edge[1] in nodes: 
+                    node_sets[min_edge[0]] = [min_edge[0], min_edge[1]]
+                    node_sets[min_edge[1]].append(min_edge[0])
                     node_unrep = min_edge[0]
                 elif min_edge[1] not in nodes and min_edge[0] in nodes:
+                    node_sets[min_edge[0]].append(min_edge[1])
+                    node_sets[min_edge[1]] = [min_edge[0], min_edge[1]]
                     node_unrep = min_edge[1]
                 x = node_unrep[0]                                              # Get the x value of the unrepresented node
                 y = node_unrep[1]                                              # Get the y value of the unrepresented node
                 nodes[node_unrep] = dict_mst.create_node('.', x, y)            # Create the unrepresented node
                 nodes[min_edge[0]].neighbors[min_edge[1]] = nodes[min_edge[1]] # Create the edge representation 
                 nodes[min_edge[1]].neighbors[min_edge[0]] = nodes[min_edge[0]] # Create the reverse edge representation
+            else:
+                if min_edge[1] not in node_sets[min_edge[0]]:
+                    for node in node_sets[min_edge[0]]:
+                        node_sets[min_edge[1]].append(node)
+                    for node in node_sets[min_edge[1]]:
+                        node_sets[min_edge[0]].append(node)
+                    nodes[min_edge[0]].neighbors[min_edge[1]] = nodes[min_edge[1]]
+                    nodes[min_edge[1]].neighbors[min_edge[0]] = nodes[min_edge[0]]
+
             edges.remove(min_edge)
             weights.remove(min(weights))
         return nodes

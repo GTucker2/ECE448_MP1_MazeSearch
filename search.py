@@ -320,14 +320,14 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
                 if min_val is None or f[node_xy] <= f[cur_xy]:
                     min_val = f[node_xy]
                     cur_xy = node_xy
-        print(str(unvisited) + ":" + str(cur_xy))
-        print(q)
+        print("unvisited: " + str(unvisited))
+        print("q:" + str(q))
+        print("cur: " + str(cur_xy))
         unvisited.remove(cur_xy)
         q.remove(cur_xy) 
         if len(unvisited) == 0: 
             return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy)
         for neighbor_xy in mst_data[cur_xy].neighbors.keys():
-            print("at : " + str(cur_xy))
             if neighbor_xy is not None:
                 if mst_data[cur_xy].neighbors[neighbor_xy].traversed is False:
                     q.append(neighbor_xy)
@@ -343,7 +343,7 @@ def a_star_mult(maze_data, mazeinfo, maze_tree, sd_data, mst_data, start_xy):
                     f[neighbor_xy] = g_tentative + sd_data.get_min_sd(neighbor_xy[0], neighbor_xy[1]) + mst_obj.sum_weights(mst_data, sd_data)
         mst_data[cur_xy].traversed = True 
 
-    return 0
+    return a_star_mult_retrace(maze_data, mazeinfo, maze_tree, mst_data, cur_xy)
 
 def retrace(goal, maze_data, do_print):
     ''' retrace
