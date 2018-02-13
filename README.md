@@ -1,6 +1,8 @@
 # ECE448_MP1_MazeSearch
 ECE448 MP1; search algorithms on trees. 
 
+Due to completion, this project has been archived and made read-only.
+
 ## Authors
 * **Griffin A. Tucker**  - [GTucker2](https://github.com/GTucker2)
 * **Michael Racine** - [JotaroCooljo](https://github.com/JotaroCooljo)
